@@ -9,7 +9,7 @@ from pathlib import Path
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
-from backend.database import db
+from backend.database import init_db
 from backend.routes.api import api_bp
 
 # Load environment variables
@@ -27,16 +27,14 @@ def create_app():
     app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET_KEY', 'jwt-secret-key')
     
     # Initialize extensions
-    db.init_app(app)
     CORS(app)
     
     # Register blueprints
     app.register_blueprint(api_bp, url_prefix='/api')
     
-    # Create tables
-    with app.app_context():
-        db.create_all()
-        print("Database tables created successfully!")
+    # Initialize MongoDB (indexes, counters)
+    init_db()
+    print("Database initialized successfully!")
     
     # Root endpoint
     @app.route('/')

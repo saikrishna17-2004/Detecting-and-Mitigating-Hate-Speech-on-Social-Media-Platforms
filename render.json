@@ -19,6 +19,10 @@
     "FLASK_ENV": {
       "description": "Flask environment",
       "value": "production"
+    },
+    "FRONTEND_URL": {
+      "description": "Frontend URL for CORS",
+      "value": "https://your-frontend-url.onrender.com"
     }
   },
   "buildCommand": "pip install -r requirements.txt",
