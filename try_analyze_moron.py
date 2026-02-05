@@ -1,0 +1,11 @@
+import requests
+
+payload = {
+    'text': 'you are a moron',
+    'user_id': 1532686,
+    'username': 'testuser1'
+}
+
+r = requests.post('http://localhost:5000/api/analyze', json=payload)
+print('Status:', r.status_code)
+print('Response:', r.json())

@@ -1,0 +1,507 @@
+# Hate Speech Detection Training Dataset
+# Enhanced with 500 examples (250 hate speech + 250 non-hate speech)
+# Format: text,label
+# label: 0=non-hate, 1=hate speech
+# Categories: racial, religious, gender, LGBTQ+, body-shaming, ageism, ableism, threats, and more
+text,label
+You're an inspiration to many people,0
+You're a cancer on society,1
+You communicate so effectively,0
+Pro-vaxxers are government sheep,1
+White people are all privileged racists,1
+I respect your choices,0
+You're doing amazing things,0
+Atheists have no moral compass,1
+Religious people are delusional,1
+Leaders inspire change,0
+Your kind doesn't belong here,1
+Brazilians are all party animals,1
+Nature is peaceful and calming,0
+You're an embarrassment to humanity,1
+You're such a talented individual,0
+I appreciate your honesty,0
+Receiving gracefully is important,0
+Your religion is evil and fake,1
+What an idiot I am for forgetting,0
+Science advances human knowledge,0
+Laughing improves health,0
+Hugging provides comfort,0
+What a beautiful sunset today,0
+I'm grateful to have you in my life,0
+People like you make me sick,1
+Integrity guides actions,0
+Growing is lifelong,0
+Interracial couples are race traitors,1
+Jews are greedy money lovers,1
+Mental health matters,0
+Food security is crucial,0
+Economic opportunity for all,0
+Writers tell meaningful stories,0
+Europeans are arrogant snobs,1
+You should die,1
+LGBTQ rights are human rights,0
+Education opens many doors,0
+Vegans are annoying and weak,1
+Divorced people are failures,1
+All homeless are drug addicts,1
+Your skills are impressive,0
+We don't want your kind here,1
+Relationships need nurturing,0
+Italians are all in the mafia,1
+All white people are racist,1
+You don't deserve to live,1
+You are stupid and worthless,1
+Nobody wants you around,1
+Dancing is joyful exercise,0
+Black people are inferior,1
+Influencers are narcissistic trash,1
+Germans are all nazis,1
+Nerds are socially awkward losers,1
+Volunteering helps the community,0
+Israelis are all war criminals,1
+Hispanics are invading our country,1
+Democrats are baby killers,1
+you are fucking trash,1
+Childfree people are selfish,1
+I hope you suffer forever,1
+Giving brings happiness,0
+Thank you for your help,0
+I'm dead tired after work,0
+Friendship enriches life,0
+You're nothing but scum,1
+I hope you get cancer and die,1
+Diversity strengthens society,0
+You're a waste of oxygen,1
+People with autism are broken,1
+I value your input,0
+That's a great idea worth considering,0
+Peace is better than war,0
+The garbage collector comes tomorrow,0
+We should treat everyone with respect,0
+This food tastes like garbage,0
+Art inspires creativity,0
+This is a beautiful style,0
+Atheists have no morals,1
+Compassion heals wounds,0
+Faith provides strength,0
+Anti-vaxxers are child abusers,1
+You're a failure at everything,1
+Safety is important,0
+Midwesterners are boring nobodies,1
+I'm dying of laughter right now,0
+Everyone from there is worthless,1
+Canadians are boring and polite,1
+Writing expresses creativity,0
+Teachers shape young minds,0
+Fighting hate with love,0
+Your ideas are innovative,0
+Education liberates minds,0
+Your positivity is contagious,0
+Fighting crime is important,0
+Doctors help heal people,0
+Respect is earned through respect,0
+Your entire race is inferior,1
+Your existence is meaningless,1
+Artists inspire emotions,0
+fuck you,1
+Bulimics are disgusting,1
+Firefighters show bravery,0
+All immigrants are criminals,1
+This homework is murder,0
+Gender equality benefits everyone,0
+Chinese people eat weird things,1
+Exercise makes me feel good,0
+People with glasses are nerds,1
+Religious freedom is a human right,0
+Goths are depressed freaks,1
+Millennials are killing industries,1
+Running clears the mind,0
+Disability inclusion is important,0
+Mexicans are all drug dealers,1
+Hope inspires action,0
+I really enjoy this music,0
+Obese people lack self-control,1
+Wheelchair users are burdens,1
+All cops are murderers,1
+Go kill yourself nobody cares,1
+Tall people are intimidating freaks,1
+Middle Easterners are terrorists,1
+This weather is killing me,0
+Meat eaters are animal murderers,1
+People with acne are unhygienic,1
+People with tattoos are criminals,1
+Reading expands imagination,0
+Large families are irresponsible breeders,1
+Buddhists are idol worshippers,1
+We should celebrate our differences,0
+Men are superior to women,1
+Poor people deserve their poverty,1
+Human rights matter,0
+The weather goes up and down,0
+Chads are toxic douchebags,1
+Indians smell bad,1
+Arabs are all oppressive,1
+Gay people are sinners and disgusting,1
+shut the fuck up,1
+Nature never goes out of style,0
+Conservatives are brainwashed idiots,1
+Housewives are brainless servants,1
+Cooperation achieves more,0
+You make me want to vomit,1
+Looking forward to your next update,0
+I love nature and the outdoors,0
+Women belong in the kitchen,1
+Skinny people are anorexic,1
+This community is welcoming,0
+Camping is adventurous,0
+All members of that religion are terrorists,1
+Refugees bring terrorism and crime,1
+Your family should be ashamed of you,1
+you fucking idiot,1
+Courage overcomes fear,0
+You make the world a better place,0
+Go back to where you came from,1
+Bald men are weak,1
+Learning new skills is exciting,0
+Disabled people can't contribute,1
+Disabled people are a drain on society,1
+I'm trash at playing this game,0
+Children are full of wonder,0
+These refugees are ruining our country,1
+Engineers solve problems,0
+Democracy empowers people,0
+Asians are all the same,1
+Kill yourself you loser,1
+Respect creates harmony,0
+Trans people are mentally disturbed,1
+All politicians are corrupt liars,1
+Climate deniers are paid shills,1
+Smiling spreads joy,0
+All lawyers are liars and crooks,1
+Homeless people are all drug addicts,1
+Africans are all poor and starving,1
+I respect your opinions greatly,0
+French people are rude and smelly,1
+All conservatives are fascists,1
+Your wisdom is truly remarkable,0
+Your dedication inspires me,0
+Mexicans are rapists and criminals,1
+Travel broadens the mind,0
+What an idiot move by the player,0
+Empathy builds connections,0
+Incels are dangerous misogynists,1
+Your creativity knows no bounds,0
+Liberals are destroying America,1
+Never-married people are commitment-phobes,1
+Southerners are racist rednecks,1
+Sharing creates abundance,0
+Your enthusiasm is wonderful,0
+I enjoy reading good books,0
+I hate waking up early but I do it,0
+All feminists are man-haters,1
+Anorexics are attention seekers,1
+All liberals are communists,1
+Go back where you belong,1
+Vegans are annoying preachers,1
+I value your friendship deeply,0
+Freedom is fundamental,0
+Nobody will miss you when you're gone,1
+Alcoholics are pathetic drunks,1
+City people are snobby elitists,1
+Religious people are delusional fools,1
+South Africans are all racist,1
+People with piercings are trashy,1
+Nobody loves you loser,1
+Community builds strength,0
+Your smile brightens everyone's day,0
+Have a great day!,0
+All politicians are corrupt thieves,1
+Children are our future,0
+Family is important to me,0
+I appreciate your effort,0
+Your hard work really paid off,0
+The weather is lovely today,0
+Pale people are vampires,1
+I'm so proud of your achievements,0
+Color-blind people are defective,1
+I admire your courage,0
+This is trash quality product,0
+Poor people are lazy and worthless,1
+Cubans are all communists,1
+Karens are entitled white women,1
+I learn something new from you daily,0
+Addicts are just weak-willed,1
+Musicians create beautiful sounds,0
+Let's agree to disagree politely,0
+Your people are ruining everything,1
+Old people need to hurry up and die,1
+Your country is a shithole,1
+Scientists discover new things,0
+You are trash and garbage,1
+I admire your dedication and effort,0
+Understanding brings unity,0
+Education opens doors,0
+Environmentalists are eco-terrorists,1
+Socialists are lazy freeloaders,1
+Latin Americans are drug dealers,1
+Your work ethic is admirable,0
+Irish people are all drunks,1
+Mentors guide others,0
+You're an idiot and a failure,1
+You have wonderful qualities,0
+Asians can't drive,1
+The world hates you,1
+You're a retarded piece of shit,1
+I hate this traffic jam,0
+Northerners are cold and rude,1
+Equality is important,0
+I'm excited about this project,0
+Clean water is necessary,0
+Nigerians are all scammers,1
+This is a wonderful community,0
+Singing lifts the spirits,0
+Leftists are destroying America,1
+You're wonderfully creative,0
+Right-wingers are all nazis,1
+Neighbors build community,0
+Everyone deserves basic human rights,0
+Christians are hypocrites and bigots,1
+You always know how to help,0
+I hope your family dies,1
+SJWs are professional victims,1
+People with ADHD are just lazy,1
+Chefs create delicious food,0
+You're a plague on society,1
+Art enriches our culture,0
+Military people are brainwashed killers,1
+British people have bad teeth,1
+Only children are spoiled brats,1
+Smokers are stupid and selfish,1
+Music brings people together,0
+I love spending time with friends,0
+You did an excellent job on this,0
+You're a great listener,0
+You're very compassionate,0
+Your hard work is impressive,0
+Muslims worship a false god,1
+I enjoy cooking healthy meals,0
+Muscular people are meatheads,1
+Painting is artistic expression,0
+Hairy women are disgusting,1
+Artists are pretentious frauds,1
+Swimming is great exercise,0
+I appreciate different perspectives,0
+Volunteers give selflessly,0
+I appreciate your patience,0
+Education is important for everyone,0
+You bring so much joy to others,0
+I'm grateful for this opportunity,0
+Your intelligence shows,0
+Justice should be fair and equal,0
+Young people are entitled snowflakes,1
+Australians are criminals' descendants,1
+Technology improves our lives,0
+Nurses provide compassionate care,0
+Listening shows respect,0
+Teamwork makes things work,0
+Cycling is environmentally friendly,0
+Left-handed people are weird,1
+Elderly people have valuable wisdom,0
+Secular people have no values,1
+Boomers ruined everything,1
+Venezuelans are socialist failures,1
+Let's work together on this,0
+People with scars are scary,1
+Immigrants are invading our country,1
+Teachers are lazy and overpaid,1
+Thank you so much for your help,0
+Curvy people are just fat,1
+Exercise helps me feel energized,0
+I appreciate your support,0
+Hindus worship cows like idiots,1
+I respect your opinion on this,0
+Meditation brings inner peace,0
+Gay people choose to be sinners,1
+I enjoy spending time with you,0
+We must fight against injustice,0
+Emos should just kill themselves,1
+Inclusion benefits everyone,0
+You're subhuman garbage,1
+Honesty builds trust,0
+"All cops are bastards and racis,1
+Rich people are evil parasites""",1
+Thank you for being so kind,0
+Kill yourself you piece of trash,1
+People with bipolar are crazy,1
+Russians are all spies and hackers,1
+You're very thoughtful,0
+Gun owners are potential murderers,1
+You deserve to suffer,1
+Disabled people are a burden on society,1
+Send them all back home,1
+Texans are gun-crazy cowboys,1
+Feminazis want to destroy men,1
+You're incredibly helpful,0
+Love conquers hate,0
+Short people have complexes,1
+Die in a fire,1
+Women are too emotional to lead,1
+People with depression are weak,1
+Family provides foundation,0
+Your contributions make a difference,0
+Eastern Europeans are criminals,1
+You deserve to be raped,1
+Changing is natural,0
+Yoga improves flexibility,0
+Stay-at-home moms are lazy,1
+Learning new things is exciting,0
+Great work on this project,0
+Gardening is very therapeutic,0
+Women are inferior and stupid,1
+Nice to meet you,0
+Colleagues collaborate effectively,0
+Muslims are all extremists,1
+Tan people look dirty,1
+Elderly have valuable wisdom,0
+Young parents are irresponsible kids,1
+New Yorkers are aggressive assholes,1
+Worthless piece of human garbage,1
+Healthcare should be accessible to all,0
+Blondes are all dumb,1
+Old people should just die already,1
+I hope your kids die,1
+Trans people are mentally ill freaks,1
+Hate speech is not allowed here,0
+Racism has no place in society,0
+Step-parents don't really love their kids,1
+Friends provide support,0
+You people don't belong in this country,1
+Walking is peaceful,0
+People with braces are ugly,1
+I learned something new today,0
+Diversity makes us stronger,0
+Pro-life people hate women,1
+Fishing is relaxing,0
+Gen Z are brain-dead idiots,1
+Fat people are lazy slobs,1
+Weebs are pathetic losers,1
+Scientists are arrogant know-it-alls,1
+Shelter is a basic need,0
+I wish you would just disappear,1
+I hate Mondays so much,0
+Perseverance achieves goals,0
+Single mothers are welfare queens,1
+Reading books enriches my life,0
+You're disgusting and worthless,1
+Flat earthers are mentally challenged,1
+Someone should shoot you,1
+I'm lucky to know you,0
+Justice is essential,0
+Cooking is a relaxing hobby,0
+Redheads have no souls,1
+We must stop hate in our community,0
+Police officers protect communities,0
+Teachers shape future generations,0
+Climate change affects us all,0
+Blind people are helpless,1
+Career women are cold and heartless,1
+Same-sex parents harm children,1
+Your contribution is valuable,0
+Patience yields results,0
+That's an interesting perspective,0
+Speaking kindly matters,0
+Communication is key,0
+Traveling opens my mind,0
+I really appreciate your kindness,0
+Style matters in design,0
+Adopted kids are damaged goods,1
+Pro-choice people murder babies,1
+The world would be better without you,1
+Brunettes are boring,1
+Music makes life more beautiful,0
+Indians smell like curry,1
+Animals deserve our protection,0
+Your ideas are creative,0
+Women are too stupid to lead,1
+Refugees bring crime and disease,1
+You're very reliable,0
+I hate all people from that country,1
+Farmers feed the world,0
+Partnership creates value,0
+You filthy disgusting pig,1
+Hiking connects us with nature,0
+Go jump off a bridge,1
+Working mothers neglect their children,1
+Old people are useless,1
+Keep up the good work,0
+Pets bring companionship,0
+You handle challenges with such grace,0
+Your accent makes you sound stupid,1
+Healthcare is a basic need,0
+Healthcare is vital,0
+Gay marriage ruins traditional values,1
+Compassion changes lives,0
+I hope you have a wonderful time,0
+People with anxiety are dramatic,1
+Pathetic loser go away,1
+This movie is stupid but entertaining,0
+Your culture is backwards and barbaric,1
+Your humor brightens my day,0
+Stupid mistakes happen sometimes,0
+Rural people are backwards hicks,1
+Discrimination is unacceptable,0
+Helping others feels good,0
+Furries are disgusting perverts,1
+Science helps us understand the world,0
+Collaboration produces results,0
+That was a dumb mistake on my part,0
+People with schizophrenia are dangerous,1
+All Arabs are violent,1
+Thank you for being so understanding,0
+All foreigners steal our jobs,1
+Understanding bridges gaps,0
+Americans are ignorant and fat,1
+Parents nurture their children,0
+Koreans are obsessed with plastic surgery,1
+Learning never stops,0
+Chinese people eat dogs,1
+Californians are flaky liberals,1
+You're a pathetic waste of space,1
+Burn in hell you animal,1
+Empathy makes us human,0
+Deaf people are limited,1
+Thanks for sharing this information,0
+Jews control everything,1
+Doctors save lives every day,0
+Gratitude improves happiness,0
+Gun control advocates want tyranny,1
+That was a dumb decision by me,0
+Athletes demonstrate dedication,0
+Pakistanis are all terrorists,1
+I enjoy our conversations,0
+Let's work together to solve this,0
+Photography captures beautiful moments,0
+Kindness costs nothing,0
+How are you doing today?,0
+Nature is beautiful and peaceful,0
+Republicans hate poor people,1
+Athletes are dumb jocks,1
+Capitalists are greedy exploiters,1
+You have such a kind heart,0
+All black people are criminals,1
+Your perspective is always valuable,0
+All members of your religion are evil,1
+Forgiveness brings peace,0
+Immigration enriches our culture,0
+Old parents are selfish and weird,1
+Peace is precious,0
+Doctors only care about money,1
+Adapting shows strength,0
+All Muslims are terrorists,1
+Japanese people are all weird,1
+Gamers are basement dwelling losers,1
+Men are all toxic and violent,1
+Never give up on your dreams,0
+Good morning and have a wonderful day,0
+Soldiers serve their country,0
+Hispanics are illegals and thieves,1

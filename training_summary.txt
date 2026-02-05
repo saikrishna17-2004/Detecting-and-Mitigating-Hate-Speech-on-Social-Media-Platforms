@@ -1,0 +1,16 @@
+===========================================================================
+HATE SPEECH DETECTION - FINAL TRAINING SUMMARY
+===========================================================================
+
+Dataset Size: 4,000 samples (2,000 hate + 2,000 non-hate)
+Model Accuracy: 95.63%
+Precision: 95-96%
+Recall: 95-96%
+F1-Score: 0.96
+Error Rate: 4.37%
+
+Training Date: 2025-10-31
+Model Type: Ensemble (Logistic Regression + Random Forest + Naive Bayes)
+Vectorization: TF-IDF with 10,000 features
+
+Status: PRODUCTION-READY ✅

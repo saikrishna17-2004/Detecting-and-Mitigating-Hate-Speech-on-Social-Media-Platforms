@@ -1,0 +1,362 @@
+{
+  "summary": {
+    "total_tests": 34,
+    "correct": 33,
+    "accuracy": 97.05882352941177,
+    "avg_confidence": 0.3342058823529412,
+    "avg_time_ms": 30.18296466154211,
+    "max_time_ms": 665.8518314361572,
+    "min_time_ms": 7.369518280029297,
+    "throughput_per_sec": 33.131271603486944,
+    "production_ready": false
+  },
+  "criteria": {
+    "Accuracy ≥ 95%": true,
+    "Average response time < 100ms": true,
+    "Max response time < 500ms": false,
+    "Model loaded successfully": true,
+    "Throughput > 10 requests/sec": true
+  },
+  "detailed_results": [
+    {
+      "category": "Normal Speech",
+      "text": "You are doing an amazing job!",
+      "expected": "Normal",
+      "prediction": "Normal",
+      "confidence": 0.0,
+      "is_correct": true,
+      "time_ms": 665.8518314361572,
+      "hate_category": "none"
+    },
+    {
+      "category": "Normal Speech",
+      "text": "Have a great day everyone!",
+      "expected": "Normal",
+      "prediction": "Normal",
+      "confidence": 0.0,
+      "is_correct": true,
+      "time_ms": 7.80487060546875,
+      "hate_category": "none"
+    },
+    {
+      "category": "Normal Speech",
+      "text": "Let's work together on this project",
+      "expected": "Normal",
+      "prediction": "Normal",
+      "confidence": 0.0,
+      "is_correct": true,
+      "time_ms": 13.429880142211914,
+      "hate_category": "none"
+    },
+    {
+      "category": "Normal Speech",
+      "text": "Thank you for your support",
+      "expected": "Normal",
+      "prediction": "Normal",
+      "confidence": 0.0,
+      "is_correct": true,
+      "time_ms": 9.145498275756836,
+      "hate_category": "none"
+    },
+    {
+      "category": "Normal Speech",
+      "text": "The weather is beautiful today",
+      "expected": "Normal",
+      "prediction": "Normal",
+      "confidence": 0.0,
+      "is_correct": true,
+      "time_ms": 9.116888046264648,
+      "hate_category": "none"
+    },
+    {
+      "category": "Normal Speech",
+      "text": "Mathematics is a fascinating subject",
+      "expected": "Normal",
+      "prediction": "Normal",
+      "confidence": 0.0,
+      "is_correct": true,
+      "time_ms": 9.887933731079102,
+      "hate_category": "none"
+    },
+    {
+      "category": "Normal Speech",
+      "text": "I really appreciate your help",
+      "expected": "Normal",
+      "prediction": "Normal",
+      "confidence": 0.0,
+      "is_correct": true,
+      "time_ms": 7.369518280029297,
+      "hate_category": "none"
+    },
+    {
+      "category": "Normal Speech",
+      "text": "This is a wonderful presentation",
+      "expected": "Normal",
+      "prediction": "Normal",
+      "confidence": 0.0,
+      "is_correct": true,
+      "time_ms": 10.110139846801758,
+      "hate_category": "none"
+    },
+    {
+      "category": "Normal Speech",
+      "text": "Great teamwork everyone!",
+      "expected": "Normal",
+      "prediction": "Normal",
+      "confidence": 0.0,
+      "is_correct": true,
+      "time_ms": 8.560657501220703,
+      "hate_category": "none"
+    },
+    {
+      "category": "Normal Speech",
+      "text": "I'm excited about this opportunity",
+      "expected": "Normal",
+      "prediction": "Normal",
+      "confidence": 0.0,
+      "is_correct": true,
+      "time_ms": 8.493185043334961,
+      "hate_category": "none"
+    },
+    {
+      "category": "Clear Hate Speech",
+      "text": "I hate you and wish you were dead",
+      "expected": "Hate Speech",
+      "prediction": "Hate Speech",
+      "confidence": 0.75,
+      "is_correct": true,
+      "time_ms": 10.116338729858398,
+      "hate_category": "general"
+    },
+    {
+      "category": "Clear Hate Speech",
+      "text": "You're worthless and should die",
+      "expected": "Hate Speech",
+      "prediction": "Hate Speech",
+      "confidence": 0.922,
+      "is_correct": true,
+      "time_ms": 14.505147933959961,
+      "hate_category": "general"
+    },
+    {
+      "category": "Clear Hate Speech",
+      "text": "Your race is subhuman trash",
+      "expected": "Hate Speech",
+      "prediction": "Hate Speech",
+      "confidence": 0.926,
+      "is_correct": true,
+      "time_ms": 9.097814559936523,
+      "hate_category": "general"
+    },
+    {
+      "category": "Clear Hate Speech",
+      "text": "Kill yourself you pathetic loser",
+      "expected": "Hate Speech",
+      "prediction": "Hate Speech",
+      "confidence": 0.676,
+      "is_correct": true,
+      "time_ms": 10.45370101928711,
+      "hate_category": "general"
+    },
+    {
+      "category": "Clear Hate Speech",
+      "text": "All members of that religion are evil",
+      "expected": "Hate Speech",
+      "prediction": "Hate Speech",
+      "confidence": 0.85,
+      "is_correct": true,
+      "time_ms": 8.540630340576172,
+      "hate_category": "general"
+    },
+    {
+      "category": "Clear Hate Speech",
+      "text": "You deserve to be tortured and killed",
+      "expected": "Hate Speech",
+      "prediction": "Normal",
+      "confidence": 0.5,
+      "is_correct": false,
+      "time_ms": 12.057304382324219,
+      "hate_category": "none"
+    },
+    {
+      "category": "Clear Hate Speech",
+      "text": "Die you worthless scum",
+      "expected": "Hate Speech",
+      "prediction": "Hate Speech",
+      "confidence": 0.893,
+      "is_correct": true,
+      "time_ms": 12.471437454223633,
+      "hate_category": "general"
+    },
+    {
+      "category": "Discrimination",
+      "text": "Women belong in the kitchen",
+      "expected": "Hate Speech",
+      "prediction": "Hate Speech",
+      "confidence": 0.769,
+      "is_correct": true,
+      "time_ms": 8.909940719604492,
+      "hate_category": "general"
+    },
+    {
+      "category": "Discrimination",
+      "text": "Gay people are mentally ill",
+      "expected": "Hate Speech",
+      "prediction": "Hate Speech",
+      "confidence": 0.921,
+      "is_correct": true,
+      "time_ms": 11.047840118408203,
+      "hate_category": "general"
+    },
+    {
+      "category": "Discrimination",
+      "text": "Old people are useless burdens",
+      "expected": "Hate Speech",
+      "prediction": "Hate Speech",
+      "confidence": 0.941,
+      "is_correct": true,
+      "time_ms": 11.832952499389648,
+      "hate_category": "general"
+    },
+    {
+      "category": "Discrimination",
+      "text": "Fat people disgust me",
+      "expected": "Hate Speech",
+      "prediction": "Hate Speech",
+      "confidence": 0.662,
+      "is_correct": true,
+      "time_ms": 22.413015365600586,
+      "hate_category": "general"
+    },
+    {
+      "category": "Discrimination",
+      "text": "Poor people are lazy trash",
+      "expected": "Hate Speech",
+      "prediction": "Hate Speech",
+      "confidence": 0.963,
+      "is_correct": true,
+      "time_ms": 11.803388595581055,
+      "hate_category": "general"
+    },
+    {
+      "category": "Discrimination",
+      "text": "Disabled people are a burden on society",
+      "expected": "Hate Speech",
+      "prediction": "Hate Speech",
+      "confidence": 0.789,
+      "is_correct": true,
+      "time_ms": 8.738994598388672,
+      "hate_category": "general"
+    },
+    {
+      "category": "Discrimination",
+      "text": "Transgender people are sick freaks",
+      "expected": "Hate Speech",
+      "prediction": "Hate Speech",
+      "confidence": 0.801,
+      "is_correct": true,
+      "time_ms": 15.267133712768555,
+      "hate_category": "general"
+    },
+    {
+      "category": "Constructive Criticism (Should NOT flag)",
+      "text": "Your work needs improvement",
+      "expected": "Normal",
+      "prediction": "Normal",
+      "confidence": 0.0,
+      "is_correct": true,
+      "time_ms": 11.823654174804688,
+      "hate_category": "none"
+    },
+    {
+      "category": "Constructive Criticism (Should NOT flag)",
+      "text": "I don't agree with your opinion",
+      "expected": "Normal",
+      "prediction": "Normal",
+      "confidence": 0.0,
+      "is_correct": true,
+      "time_ms": 8.401870727539062,
+      "hate_category": "none"
+    },
+    {
+      "category": "Constructive Criticism (Should NOT flag)",
+      "text": "That was a terrible decision",
+      "expected": "Normal",
+      "prediction": "Normal",
+      "confidence": 0.0,
+      "is_correct": true,
+      "time_ms": 8.55708122253418,
+      "hate_category": "none"
+    },
+    {
+      "category": "Constructive Criticism (Should NOT flag)",
+      "text": "This code has some bugs",
+      "expected": "Normal",
+      "prediction": "Normal",
+      "confidence": 0.0,
+      "is_correct": true,
+      "time_ms": 8.980989456176758,
+      "hate_category": "none"
+    },
+    {
+      "category": "Constructive Criticism (Should NOT flag)",
+      "text": "Your presentation could be better",
+      "expected": "Normal",
+      "prediction": "Normal",
+      "confidence": 0.0,
+      "is_correct": true,
+      "time_ms": 11.544942855834961,
+      "hate_category": "none"
+    },
+    {
+      "category": "Edge Cases",
+      "text": "I hate traffic jams",
+      "expected": "Normal",
+      "prediction": "Normal",
+      "confidence": 0.0,
+      "is_correct": true,
+      "time_ms": 11.400222778320312,
+      "hate_category": "none"
+    },
+    {
+      "category": "Edge Cases",
+      "text": "This weather is killing me",
+      "expected": "Normal",
+      "prediction": "Normal",
+      "confidence": 0.0,
+      "is_correct": true,
+      "time_ms": 8.894920349121094,
+      "hate_category": "none"
+    },
+    {
+      "category": "Edge Cases",
+      "text": "I'm dying of laughter",
+      "expected": "Normal",
+      "prediction": "Normal",
+      "confidence": 0.0,
+      "is_correct": true,
+      "time_ms": 8.043766021728516,
+      "hate_category": "none"
+    },
+    {
+      "category": "Edge Cases",
+      "text": "You're killing it!",
+      "expected": "Normal",
+      "prediction": "Normal",
+      "confidence": 0.0,
+      "is_correct": true,
+      "time_ms": 15.04659652709961,
+      "hate_category": "none"
+    },
+    {
+      "category": "Edge Cases",
+      "text": "That test killed me",
+      "expected": "Normal",
+      "prediction": "Normal",
+      "confidence": 0.0,
+      "is_correct": true,
+      "time_ms": 16.50071144104004,
+      "hate_category": "none"
+    }
+  ]
+}

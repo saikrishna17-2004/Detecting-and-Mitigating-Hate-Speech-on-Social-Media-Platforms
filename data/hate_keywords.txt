@@ -1,0 +1,1446 @@
+# Hate/offensive keywords and phrases
+# One per line; lines starting with # are comments
+# Add thousands of entries here. Examples below:
+
+# Profanity (examples)
+fuck
+fucking
+bitch
+bastard
+asshole
+shit
+slut
+whore
+douche
+
+# Aggressive/abusive single words
+stupid
+idiot
+dumb
+ugly
+trash
+garbage
+worthless
+loser
+useless
+terrorist
+terrorists
+subhuman
+inferior
+animals
+criminals
+slobs
+disgusting
+freak
+freaks
+scum
+vermin
+parasite
+parasites
+
+# Phrases (examples)
+shut the fuck up
+go fuck yourself
+you fucking idiot
+piece of shit
+you are worthless
+you are useless
+you are stupid
+you are an idiot
+you are trash
+go kill yourself
+kill yourself
+go die
+drop dead
+get lost
+piss off
+fuck off
+screw you
+damn you
+curse you
+hate you
+despise you
+loathe you
+detest you
+can't stand you
+you disgust me
+you sicken me
+you're disgusting
+you're pathetic
+you're a joke
+you're a failure
+you're a loser
+you're a waste
+waste of space
+waste of time
+piece of trash
+human garbage
+total scum
+complete idiot
+absolute moron
+fucking stupid
+so dumb
+brain dead
+no brain
+empty head
+thick skull
+shit for brains
+dumb as rocks
+stupid as hell
+worthless piece
+pathetic excuse
+sorry excuse
+disgrace to
+embarrassment to
+shame to
+insult to
+you deserve nothing
+you deserve to die
+should not exist
+should never exist
+better off dead
+world without you
+nobody likes you
+everyone hates you
+you have no friends
+no one cares
+nobody wants you
+go away forever
+disappear forever
+never come back
+get out of here
+leave us alone
+stop existing
+cease to exist
+you're subhuman
+less than human
+not even human
+you're an animal
+you're a beast
+you're a monster
+you're a demon
+you're evil incarnate
+pure evil
+complete evil
+total evil
+absolute evil
+embodiment of evil
+spawn of satan
+child of devil
+devil's work
+god's mistake
+nature's mistake
+evolutionary dead end
+genetic failure
+biological waste
+defective human
+broken person
+damaged goods
+beyond repair
+past saving
+too far gone
+no hope for you
+hopeless case
+lost cause
+waste of oxygen
+waste of resources
+drain on society
+burden to society
+society's reject
+social outcast
+unwanted reject
+complete reject
+total reject
+absolute reject
+you don't belong
+you don't fit in
+you're not welcome
+get the hell out
+gtfo
+fuck right off
+piss right off
+crawl back
+go back where you came from
+return to hell
+burn in hell
+rot in hell
+die in hell
+suffer forever
+eternal suffering
+deserve torture
+deserve punishment
+deserve death
+death to you
+may you die
+hope you die
+wish you dead
+want you gone
+need you gone
+must die
+should die
+will die
+going to die
+you're dead
+you're finished
+you're done
+you're over
+game over
+it's over
+all over
+the end
+your end
+end of you
+no more you
+goodbye forever
+farewell forever
+see you never
+never again
+not coming back
+won't return
+can't return
+shouldn't return
+don't come back
+stay away
+keep away
+far away
+get away
+run away
+go away
+leave now
+leave immediately
+leave forever
+gone forever
+disappeared forever
+vanished forever
+erased forever
+deleted forever
+removed forever
+eliminated forever
+exterminated forever
+terminated forever
+finished forever
+ended forever
+concluded forever
+done with you
+finished with you
+over with you
+through with you
+no more dealing
+can't deal anymore
+won't deal anymore
+refuse to deal
+decline to deal
+reject dealing
+dismiss you
+disregard you
+ignore you
+overlook you
+neglect you
+abandon you
+forsake you
+desert you
+leave you behind
+cast you aside
+throw you away
+toss you out
+kick you out
+boot you out
+expel you
+exile you
+banish you
+ostracize you
+shun you
+avoid you
+evade you
+escape you
+flee you
+run from you
+hide from you
+stay clear
+keep distance
+maintain distance
+preserve distance
+create distance
+establish distance
+increase distance
+maximize distance
+total separation
+complete separation
+absolute separation
+permanent separation
+forever apart
+always apart
+eternally apart
+infinitely apart
+boundlessly apart
+endlessly apart
+ 
+# Additional aggressive/abusive single words (non-slur)
+moron
+moronic
+imbecile
+imbecilic
+cretin
+idiotic
+numpty
+nitwit
+dimwit
+halfwit
+dullard
+simpleton
+dunce
+blockhead
+bonehead
+meathead
+airhead
+thickhead
+thicko
+peabrain
+brainless
+mindless
+witless
+clueless
+ignorant
+uneducated
+uncivilized
+brutish
+animalistic
+jackass
+dumbass
+asshat
+douchebag
+dirtbag
+scumbag
+lowlife
+degenerate
+disgrace
+disgraceful
+pathetic
+pitiful
+wretched
+abysmal
+horrid
+horrible
+nasty
+gross
+vile
+repulsive
+repugnant
+revolting
+obnoxious
+toxic
+hateful
+detestable
+despicable
+contemptible
+loathsome
+odious
+appalling
+atrocious
+rotten
+evil
+malicious
+malevolent
+spiteful
+venomous
+hostile
+abusive
+aggressive
+threatening
+bully
+bullying
+harasser
+harassing
+harass
+troll
+trolling
+creep
+creepy
+pervert
+perverted
+psycho
+psychotic
+lunatic
+maniac
+insane
+deranged
+unhinged
+freakish
+weirdo
+jerk
+jerkish
+clown
+clownish
+buffoon
+bozo
+goon
+menace
+coward
+cowardly
+weakling
+wimp
+wimpish
+snowflake
+crybaby
+whiny
+whiner
+complainer
+attention-seeker
+narcissist
+narcissistic
+selfish
+greedy
+stingy
+cheapskate
+miser
+miserable
+bitter
+resentful
+jealous
+envious
+petty
+vindictive
+cruel
+ruthless
+heartless
+soulless
+cold-blooded
+barbaric
+savage
+uncivilised
+primitive
+backwards
+regressive
+reactionary
+extremist
+fanatic
+fanatical
+radical
+militant
+zealot
+fundamentalist
+cultist
+brainwashed
+deluded
+deceived
+foolish
+gullible
+naive
+ignoramus
+know-nothing
+unskilled
+incompetent
+inept
+hopeless
+helpless
+dependent
+needy
+clingy
+annoying
+irritating
+frustrating
+infuriating
+exasperating
+insufferable
+intolerable
+unbearable
+unacceptable
+inappropriate
+improper
+indecent
+obscene
+lewd
+crude
+vulgar
+coarse
+tasteless
+tacky
+cheap
+shoddy
+substandard
+mediocre
+average
+ordinary
+plain
+boring
+dull
+tedious
+tiresome
+wearisome
+monotonous
+repetitive
+predictable
+unoriginal
+derivative
+copycat
+plagiarist
+fraud
+fake
+phony
+pretender
+poser
+wannabe
+tryhard
+desperate
+sad
+depressing
+depressed
+gloomy
+pessimistic
+negative
+cynical
+skeptical
+distrustful
+suspicious
+paranoid
+delusional
+irrational
+illogical
+unreasonable
+absurd
+ridiculous
+laughable
+joke
+mockery
+embarrassment
+embarrassing
+shameful
+dishonorable
+scandalous
+notorious
+infamous
+lawbreaker
+offender
+violator
+transgressor
+sinner
+guilty
+condemned
+damned
+cursed
+doomed
+lost
+forgotten
+abandoned
+rejected
+unwanted
+undesired
+unloved
+unlovable
+hateable
+unforgivable
+irredeemable
+corrupt
+corrupted
+tainted
+spoiled
+decayed
+decomposed
+festering
+infected
+diseased
+sick
+ill
+unhealthy
+unwell
+defective
+flawed
+broken
+damaged
+ruined
+destroyed
+wrecked
+demolished
+annihilated
+obliterated
+erased
+eliminated
+exterminated
+terminated
+executed
+murdered
+killer
+murderer
+assassin
+butcher
+slayer
+destroyer
+vandal
+arsonist
+pyromaniac
+saboteur
+traitor
+betrayer
+backstabber
+snitch
+rat
+informant
+spy
+mole
+agent
+operative
+conspirator
+schemer
+plotter
+manipulator
+controller
+oppressor
+tyrant
+dictator
+despot
+autocrat
+authoritarian
+totalitarian
+insurgent
+rebel
+revolutionary
+guerrilla
+fighter
+warrior
+combatant
+soldier
+mercenary
+hitman
+gangster
+mobster
+felon
+convict
+prisoner
+inmate
+captive
+slave
+servant
+serf
+peasant
+commoner
+plebeian
+lowborn
+baseborn
+illegitimate
+accident
+mistake
+failure
+washout
+dropout
+quitter
+deserter
+turncoat
+renegade
+defector
+apostate
+heretic
+blasphemer
+infidel
+heathen
+pagan
+atheist
+godless
+immoral
+amoral
+unethical
+dishonest
+deceitful
+lying
+liar
+cheat
+cheater
+swindler
+scammer
+conman
+fraudster
+thief
+robber
+burglar
+looter
+pillager
+plunderer
+bandit
+outlaw
+rogue
+villain
+evildoer
+wrongdoer
+malefactor
+miscreant
+reprobate
+delinquent
+perpetrator
+culprit
+suspect
+accused
+defendant
+sentenced
+punished
+penalized
+disciplined
+corrected
+reformed
+rehabilitated
+pardoned
+forgiven
+acquitted
+exonerated
+vindicated
+cleared
+innocent
+blameless
+faultless
+guiltless
+sinless
+pure
+unblemished
+untainted
+uncorrupted
+unspoiled
+pristine
+flawless
+impeccable
+exemplary
+model
+ideal
+excellent
+superior
+outstanding
+exceptional
+remarkable
+extraordinary
+phenomenal
+magnificent
+splendid
+wonderful
+marvelous
+fabulous
+fantastic
+terrific
+great
+good
+decent
+acceptable
+adequate
+satisfactory
+sufficient
+passable
+tolerable
+bearable
+endurable
+manageable
+controllable
+governable
+tameable
+trainable
+teachable
+educable
+learnable
+understandable
+comprehensible
+intelligible
+clear
+obvious
+evident
+apparent
+manifest
+visible
+noticeable
+perceptible
+discernible
+detectable
+observable
+recognizable
+identifiable
+distinguishable
+unmistakable
+unambiguous
+unequivocal
+definite
+certain
+sure
+positive
+confident
+assured
+convinced
+persuaded
+believer
+follower
+adherent
+disciple
+devotee
+enthusiast
+supporter
+advocate
+champion
+defender
+protector
+guardian
+keeper
+custodian
+caretaker
+steward
+manager
+administrator
+supervisor
+overseer
+boss
+chief
+leader
+commander
+captain
+general
+admiral
+officer
+official
+authority
+power
+force
+strength
+might
+muscle
+energy
+vigor
+vitality
+life
+existence
+being
+entity
+creature
+organism
+beast
+brute
+demon
+devil
+satan
+lucifer
+wicked
+sinful
+depraved
+twisted
+warped
+distorted
+deformed
+mutilated
+maimed
+impaired
+deficient
+lacking
+wanting
+needing
+requiring
+demanding
+insisting
+commanding
+ordering
+directing
+instructing
+teaching
+training
+educating
+informing
+advising
+counseling
+guiding
+leading
+conducting
+managing
+controlling
+dominating
+ruling
+governing
+regulating
+supervising
+overseeing
+monitoring
+watching
+observing
+surveying
+inspecting
+examining
+investigating
+probing
+questioning
+interrogating
+challenging
+confronting
+opposing
+resisting
+fighting
+battling
+warring
+conflicting
+clashing
+colliding
+crashing
+smashing
+breaking
+destroying
+demolishing
+wrecking
+ruining
+spoiling
+damaging
+harming
+hurting
+injuring
+wounding
+attacking
+assaulting
+striking
+hitting
+beating
+pounding
+punching
+kicking
+slapping
+smacking
+whipping
+lashing
+flogging
+scourging
+torturing
+tormenting
+persecuting
+oppressing
+suppressing
+repressing
+crushing
+squashing
+flattening
+leveling
+razing
+obliterating
+annihilating
+exterminating
+eliminating
+eradicating
+expunging
+erasing
+deleting
+removing
+extracting
+withdrawing
+retracting
+recalling
+revoking
+canceling
+annulling
+nullifying
+voiding
+invalidating
+negating
+denying
+refusing
+rejecting
+declining
+dismissing
+disregarding
+ignoring
+neglecting
+overlooking
+omitting
+excluding
+barring
+banning
+prohibiting
+forbidding
+preventing
+blocking
+obstructing
+hindering
+impeding
+hampering
+interfering
+disrupting
+disturbing
+interrupting
+intruding
+invading
+encroaching
+trespassing
+violating
+breaching
+infringing
+transgressing
+offending
+insulting
+affronting
+slighting
+snubbing
+scorning
+despising
+disdaining
+contemning
+loathing
+abhorring
+detesting
+hating
+disliking
+disapproving
+condemning
+denouncing
+criticizing
+censuring
+reproaching
+rebuking
+reprimanding
+scolding
+chiding
+admonishing
+warning
+cautioning
+alerting
+notifying
+informing
+telling
+saying
+speaking
+talking
+communicating
+expressing
+articulating
+verbalizing
+voicing
+uttering
+pronouncing
+declaring
+announcing
+proclaiming
+stating
+asserting
+affirming
+confirming
+verifying
+validating
+authenticating
+certifying
+attesting
+testifying
+witnessing
+observing
+seeing
+viewing
+watching
+looking
+gazing
+staring
+peering
+glancing
+glimpsing
+spotting
+noticing
+detecting
+discovering
+finding
+locating
+pinpointing
+identifying
+recognizing
+distinguishing
+differentiating
+discriminating
+separating
+dividing
+splitting
+breaking
+fracturing
+cracking
+shattering
+splintering
+fragmenting
+disintegrating
+decomposing
+decaying
+rotting
+putrefying
+festering
+corrupting
+tainting
+contaminating
+polluting
+poisoning
+infecting
+diseasing
+sickening
+weakening
+debilitating
+incapacitating
+disabling
+crippling
+paralyzing
+immobilizing
+freezing
+stopping
+halting
+ceasing
+ending
+terminating
+concluding
+finishing
+completing
+accomplishing
+achieving
+attaining
+reaching
+gaining
+obtaining
+acquiring
+getting
+receiving
+taking
+grabbing
+seizing
+capturing
+catching
+trapping
+snaring
+ensnaring
+entangling
+entrapping
+imprisoning
+confining
+restricting
+limiting
+constraining
+restraining
+binding
+tying
+fastening
+securing
+locking
+closing
+shutting
+sealing
+blocking
+barring
+obstructing
+impeding
+hindering
+preventing
+stopping
+halting
+arresting
+detaining
+holding
+keeping
+retaining
+maintaining
+preserving
+protecting
+defending
+guarding
+shielding
+sheltering
+covering
+concealing
+hiding
+obscuring
+masking
+disguising
+camouflaging
+cloaking
+veiling
+shrouding
+wrapping
+enveloping
+enclosing
+surrounding
+encircling
+encompassing
+embracing
+hugging
+holding
+grasping
+gripping
+clutching
+clenching
+squeezing
+pressing
+pushing
+shoving
+forcing
+compelling
+coercing
+pressuring
+intimidating
+threatening
+menacing
+scaring
+frightening
+terrifying
+horrifying
+shocking
+startling
+surprising
+astonishing
+amazing
+astounding
+stunning
+staggering
+overwhelming
+overpowering
+dominating
+controlling
+ruling
+governing
+commanding
+ordering
+directing
+dictating
+prescribing
+regulating
+managing
+administering
+supervising
+overseeing
+monitoring
+watching
+observing
+surveying
+inspecting
+examining
+scrutinizing
+analyzing
+evaluating
+assessing
+judging
+rating
+ranking
+grading
+scoring
+measuring
+quantifying
+calculating
+computing
+reckoning
+estimating
+approximating
+guessing
+speculating
+conjecturing
+supposing
+assuming
+presuming
+inferring
+deducing
+concluding
+determining
+deciding
+resolving
+settling
+fixing
+solving
+answering
+responding
+replying
+reacting
+acting
+behaving
+conducting
+performing
+executing
+carrying
+doing
+making
+creating
+producing
+generating
+forming
+shaping
+molding
+fashioning
+crafting
+building
+constructing
+erecting
+raising
+lifting
+elevating
+hoisting
+heaving
+hauling
+dragging
+pulling
+tugging
+yanking
+jerking
+wrenching
+twisting
+turning
+rotating
+spinning
+whirling
+twirling
+swirling
+circling
+orbiting
+revolving
+cycling
+repeating
+reiterating
+echoing
+reflecting
+mirroring
+copying
+duplicating
+replicating
+reproducing
+cloning
+imitating
+mimicking
+emulating
+simulating
+faking
+counterfeiting
+forging
+fabricating
+manufacturing
+inventing
+devising
+conceiving
+imagining
+visualizing
+useless
+envisioning
+picturing
+depicting
+portraying
+representing
+symbolizing
+signifying
+meaning
+denoting
+indicating
+showing
+demonstrating
+displaying
+exhibiting
+presenting
+introducing
+revealing
+disclosing
+exposing
+uncovering
+unveiling
+unmasking
+stripping
+baring
+naked
+nude
+exposed
+vulnerable
+defenseless
+unprotected
+unguarded
+accessible
+available
+obtainable
+attainable
+reachable
+achievable
+possible
+feasible
+practical
+realistic
+reasonable
+sensible
+logical
+rational
+sound
+valid
+legitimate
+legal
+lawful
+authorized
+permitted
+allowed
+acceptable
+appropriate
+suitable
+fitting
+proper
+correct
+right
+accurate
+precise
+exact
+specific
+particular
+individual
+personal
+private
+confidential
+secret
+classified
+restricted
+limited
+exclusive
+selective
+discriminating
+discerning
+judicious
+prudent
+cautious
+careful
+mindful
+attentive
+alert
+vigilant
+watchful
+observant
+aware
+conscious
+cognizant
+informed
+knowledgeable
+educated
+learned
+scholarly
+academic
+intellectual
+intelligent
+smart
+clever
+bright
+brilliant
+genius
+gifted
+talented
+skilled
+expert
+proficient
+competent
+capable
+able
+qualified
+certified
+licensed
+authorized
+approved
+endorsed
+recommended
+suggested
+proposed
+offered
+presented
+submitted
+provided
+supplied
+furnished
+equipped
+outfitted
+prepared
+ready
+willing
+eager
+enthusiastic
+excited
+thrilled
+delighted
+pleased
+happy
+joyful
+cheerful
+glad
+content
+satisfied
+fulfilled
+complete
+stupid 
+kill

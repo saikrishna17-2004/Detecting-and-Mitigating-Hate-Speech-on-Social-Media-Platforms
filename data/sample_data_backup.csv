@@ -1,0 +1,700 @@
+# Sample Hate Speech Dataset
+# This file contains sample data for training the model
+# Enhanced with 500 examples covering various hate speech patterns
+# Balanced dataset: 250 hate speech + 250 non-hate speech
+
+text,label
+"You are stupid and worthless",1
+"Have a great day!",0
+"I hate all people from that country",1
+"That's an interesting perspective",0
+"You should die",1
+"Thanks for sharing this information",0
+"Go back to where you came from",1
+"Looking forward to your next update",0
+"Women are inferior and stupid",1
+"Great work on this project",0
+"All members of that religion are terrorists",1
+"I appreciate your effort",0
+"You are trash and garbage",1
+"Nice to meet you",0
+"Kill yourself you loser",1
+"How are you doing today?",0
+"I wish you would just disappear",1
+"Let's work together on this",0
+"Your kind doesn't belong here",1
+"Your ideas are creative",0
+"You're an idiot and a failure",1
+"I learned something new today",0
+"Nobody wants you around",1
+"This community is welcoming",0
+"You deserve to suffer",1
+"Thank you for your help",0
+"Pathetic loser go away",1
+"Keep up the good work",0
+"You're disgusting and worthless",1
+"I hope you have a wonderful time",0
+"fuck you",1
+"you fucking idiot",1
+"shut the fuck up",1
+"you are fucking trash",1
+"All immigrants are criminals",1
+"All Muslims are terrorists",1
+"Jews control everything",1
+"Black people are inferior",1
+"Women belong in the kitchen",1
+"Gay people are sinners and disgusting",1
+"Mexicans are all drug dealers",1
+"Asians are all the same",1
+"You people don't belong in this country",1
+"Send them all back home",1
+"These refugees are ruining our country",1
+"Your religion is evil and fake",1
+"Men are superior to women",1
+"Trans people are mentally ill freaks",1
+"All white people are racist",1
+"Old people are useless",1
+"Disabled people are a burden on society",1
+"Poor people are lazy and worthless",1
+"All politicians are corrupt liars",1
+"You're a retarded piece of shit",1
+"I hope you get cancer and die",1
+"Someone should shoot you",1
+"You deserve to be raped",1
+"Go kill yourself nobody cares",1
+"The world would be better without you",1
+"You're subhuman garbage",1
+"Your family should be ashamed of you",1
+"You're a waste of oxygen",1
+"I hope your kids die",1
+"Burn in hell you animal",1
+"Nature never goes out of style",0
+"I love nature and the outdoors",0
+"Hate speech is not allowed here",0
+"This is a beautiful style",0
+"Style matters in design",0
+"Never give up on your dreams",0
+"The weather goes up and down",0
+"I hate waking up early but I do it",0
+"Stupid mistakes happen sometimes",0
+"This is trash quality product",0
+"What an idiot move by the player",0
+"That was a dumb decision by me",0
+"The garbage collector comes tomorrow",0
+"Fighting hate with love",0
+"We must stop hate in our community",0
+"What a beautiful sunset today",0
+"I really enjoy this music",0
+"Learning new things is exciting",0
+"Thank you for being so kind",0
+"Your hard work is impressive",0
+"I respect your opinion on this",0
+"Let's agree to disagree politely",0
+"Everyone deserves basic human rights",0
+"Diversity makes us stronger",0
+"I appreciate different perspectives",0
+"We should treat everyone with respect",0
+"Education is important for everyone",0
+"Healthcare should be accessible to all",0
+"Let's work together to solve this",0
+"I'm grateful for this opportunity",0
+"Your contribution is valuable",0
+"I'm excited about this project",0
+"This is a wonderful community",0
+"I love spending time with friends",0
+"Family is important to me",0
+"Reading books enriches my life",0
+"Exercise makes me feel good",0
+"I enjoy cooking healthy meals",0
+"Traveling opens my mind",0
+"Art inspires creativity",0
+"Music brings people together",0
+"Science helps us understand the world",0
+"Technology improves our lives",0
+"Nature is beautiful and peaceful",0
+"Animals deserve our protection",0
+"Children are our future",0
+"Elderly people have valuable wisdom",0
+"Teachers shape young minds",0
+"Doctors save lives every day",0
+"I hate this traffic jam",0
+"This movie is stupid but entertaining",0
+"What an idiot I am for forgetting",0
+"This food tastes like garbage",0
+"I'm trash at playing this game",0
+"That was a dumb mistake on my part",0
+"This weather is killing me",0
+"I'm dying of laughter right now",0
+"This homework is murder",0
+"I'm dead tired after work",0
+"Fighting crime is important",0
+"We must fight against injustice",0
+"I hate Mondays so much",0
+"Racism has no place in society",0
+"Discrimination is unacceptable",0
+"We should celebrate our differences",0
+"Immigration enriches our culture",0
+"Religious freedom is a human right",0
+"Gender equality benefits everyone",0
+"LGBTQ rights are human rights",0
+"Mental health matters",0
+"Disability inclusion is important",0
+"Economic opportunity for all",0
+"Climate change affects us all",0
+"Education opens doors",0
+"Healthcare is a basic need",0
+"Justice should be fair and equal",0
+"Peace is better than war",0
+"Love conquers hate",0
+"Kindness costs nothing",0
+"Empathy makes us human",0
+"Compassion changes lives",0
+"Understanding brings unity",0
+"Respect is earned through respect",0
+"You filthy disgusting pig",1
+"All foreigners steal our jobs",1
+"Women are too emotional to lead",1
+"Gay marriage ruins traditional values",1
+"Refugees bring crime and disease",1
+"All Arabs are violent",1
+"Hispanics are invading our country",1
+"Chinese people eat weird things",1
+"Indians smell bad",1
+"You're a pathetic waste of space",1
+"Your people are ruining everything",1
+"Disabled people can't contribute",1
+"Old people should just die already",1
+"Fat people are lazy slobs",1
+"All homeless are drug addicts",1
+"Single mothers are welfare queens",1
+"All cops are bastards and racis,1
+"Rich people are evil parasites",1
+"Conservatives are brainwashed idiots",1
+"Liberals are destroying America",1
+"Religious people are delusional",1
+"Atheists have no morals",1
+"Vegans are annoying and weak",1
+"Gamers are basement dwelling losers",1
+"Influencers are narcissistic trash",1
+"You're a cancer on society",1
+"Nobody loves you loser",1
+"Your existence is meaningless",1
+"People like you make me sick",1
+"You don't deserve to live",1
+"I hope you suffer forever",1
+"You're nothing but scum",1
+"Go jump off a bridge",1
+"The world hates you",1
+"You're a failure at everything",1
+"Nobody will miss you when you're gone",1
+"You're an embarrassment to humanity",1
+"Kill yourself you piece of trash",1
+"Your entire race is inferior",1
+"All members of your religion are evil",1
+"Your culture is backwards and barbaric",1
+"Your country is a shithole",1
+"Everyone from there is worthless",1
+"Your accent makes you sound stupid",1
+"Go back where you belong",1
+"We don't want your kind here",1
+"You make me want to vomit",1
+"Die in a fire",1
+"I hope your family dies",1
+"You're a plague on society",1
+"Worthless piece of human garbage",1
+"All black people are criminals",1
+"Muslims are all extremists",1
+"Jews are greedy money lovers",1
+"Hispanics are illegals and thieves",1
+"Asians can't drive",1
+"White people are all privileged racists",1
+"Women are too stupid to lead",1
+"Men are all toxic and violent",1
+"Gay people choose to be sinners",1
+"Trans people are mentally disturbed",1
+"All feminists are man-haters",1
+"Disabled people are a drain on society",1
+"Old people need to hurry up and die",1
+"Young people are entitled snowflakes",1
+"Poor people deserve their poverty",1
+"Homeless people are all drug addicts",1
+"Immigrants are invading our country",1
+"Refugees bring terrorism and crime",1
+"All cops are murderers",1
+"All lawyers are liars and crooks",1
+"All politicians are corrupt thieves",1
+"Teachers are lazy and overpaid",1
+"Doctors only care about money",1
+"Military people are brainwashed killers",1
+"Christians are hypocrites and bigots",1
+"Atheists have no moral compass",1
+"Muslims worship a false god",1
+"Buddhists are idol worshippers",1
+"Hindus worship cows like idiots",1
+"Scientists are arrogant know-it-alls",1
+"Artists are pretentious frauds",1
+"Athletes are dumb jocks",1
+"Nerds are socially awkward losers",1
+"Goths are depressed freaks",1
+"Emos should just kill themselves",1
+"Furries are disgusting perverts",1
+"Weebs are pathetic losers",1
+"Boomers ruined everything",1
+"Millennials are killing industries",1
+"Gen Z are brain-dead idiots",1
+"Karens are entitled white women",1
+"Chads are toxic douchebags",1
+"Incels are dangerous misogynists",1
+"Feminazis want to destroy men",1
+"SJWs are professional victims",1
+"All conservatives are fascists",1
+"All liberals are communists",1
+"Leftists are destroying America",1
+"Right-wingers are all nazis",1
+"Democrats are baby killers",1
+"Republicans hate poor people",1
+"Socialists are lazy freeloaders",1
+"Capitalists are greedy exploiters",1
+"Vegans are annoying preachers",1
+"Meat eaters are animal murderers",1
+"Anti-vaxxers are child abusers",1
+"Pro-vaxxers are government sheep",1
+"Flat earthers are mentally challenged",1
+"Climate deniers are paid shills",1
+"Environmentalists are eco-terrorists",1
+"Gun owners are potential murderers",1
+"Gun control advocates want tyranny",1
+"Pro-choice people murder babies",1
+"Pro-life people hate women",1
+"Religious people are delusional fools",1
+"Secular people have no values",1
+"City people are snobby elitists",1
+"Rural people are backwards hicks",1
+"Northerners are cold and rude",1
+"Southerners are racist rednecks",1
+"Californians are flaky liberals",1
+"Texans are gun-crazy cowboys",1
+"New Yorkers are aggressive assholes",1
+"Midwesterners are boring nobodies",1
+"Europeans are arrogant snobs",1
+"Americans are ignorant and fat",1
+"Africans are all poor and starving",1
+"Middle Easterners are terrorists",1
+"Latin Americans are drug dealers",1
+"Eastern Europeans are criminals",1
+"Australians are criminals' descendants",1
+"Canadians are boring and polite",1
+"French people are rude and smelly",1
+"Germans are all nazis",1
+"British people have bad teeth",1
+"Irish people are all drunks",1
+"Italians are all in the mafia",1
+"Russians are all spies and hackers",1
+"Chinese people eat dogs",1
+"Japanese people are all weird",1
+"Koreans are obsessed with plastic surgery",1
+"Indians smell like curry",1
+"Pakistanis are all terrorists",1
+"Arabs are all oppressive",1
+"Israelis are all war criminals",1
+"Brazilians are all party animals",1
+"Mexicans are rapists and criminals",1
+"Cubans are all communists",1
+"Venezuelans are socialist failures",1
+"Nigerians are all scammers",1
+"South Africans are all racist",1
+"Single mothers are welfare queens",1
+"Step-parents don't really love their kids",1
+"Adopted kids are damaged goods",1
+"Only children are spoiled brats",1
+"Large families are irresponsible breeders",1
+"Childfree people are selfish",1
+"Working mothers neglect their children",1
+"Stay-at-home moms are lazy",1
+"Career women are cold and heartless",1
+"Housewives are brainless servants",1
+"Divorced people are failures",1
+"Never-married people are commitment-phobes",1
+"Interracial couples are race traitors",1
+"Same-sex parents harm children",1
+"Young parents are irresponsible kids",1
+"Old parents are selfish and weird",1
+"Blondes are all dumb",1
+"Redheads have no souls",1
+"Brunettes are boring",1
+"Bald men are weak",1
+"Hairy women are disgusting",1
+"Tall people are intimidating freaks",1
+"Short people have complexes",1
+"Skinny people are anorexic",1
+"Muscular people are meatheads",1
+"Curvy people are just fat",1
+"Pale people are vampires",1
+"Tan people look dirty",1
+"People with tattoos are criminals",1
+"People with piercings are trashy",1
+"People with glasses are nerds",1
+"People with braces are ugly",1
+"People with acne are unhygienic",1
+"People with scars are scary",1
+"Left-handed people are weird",1
+"Color-blind people are defective",1
+"Deaf people are limited",1
+"Blind people are helpless",1
+"Wheelchair users are burdens",1
+"People with autism are broken",1
+"People with ADHD are just lazy",1
+"People with depression are weak",1
+"People with anxiety are dramatic",1
+"People with bipolar are crazy",1
+"People with schizophrenia are dangerous",1
+"Addicts are just weak-willed",1
+"Alcoholics are pathetic drunks",1
+"Smokers are stupid and selfish",1
+"Obese people lack self-control",1
+"Anorexics are attention seekers",1
+"Bulimics are disgusting",1
+"Self-harmers are emo freaks",1
+"Suicidal people are cowards",1
+"Cancer patients brought it on themselves",1
+"AIDS patients deserve their fate",1
+"Chronically ill people are fakers",1
+"People on welfare are lazy moochers",1
+"Minimum wage workers are failures",1
+"Unemployed people are bums",1
+"Billionaires are all evil",1
+"CEOs are greedy sociopaths",1
+"Middle management are useless",1
+"Retail workers are uneducated losers",1
+"Fast food workers don't deserve living wage",1
+"Truck drivers are uneducated",1
+"Janitors are society's failures",1
+"Garbage collectors are disgusting",1
+"Sex workers are immoral whores",1
+"Strippers are degrading themselves",1
+"OnlyFans creators are prostitutes",1
+"Influencers are narcissistic frauds",1
+"YouTubers are attention whores",1
+"TikTokers are brain-dead kids",1
+"Streamers are basement dwellers",1
+"Podcasters are wannabe celebrities",1
+"Bloggers are failed journalists",1
+"Instagram models are fake",1
+"Twitter users are all toxic",1
+"Facebook users are old and dumb",1
+"Reddit users are virgin neckbeards",1
+"Discord users are all pedophiles",1
+"4chan users are school shooters",1
+"Tumblr users are all crazy",1
+"LinkedIn users are fake professionals",1
+"Snapchat users are cheaters",1
+"Dating app users are desperate",1
+"Tinder users just want hookups",1
+"Bumble users are picky snobs",1
+"Hinge users are boring",1
+"Gamers are violent and antisocial",1
+"Mobile gamers aren't real gamers",1
+"Console players are peasants",1
+"PC gamers are elitist snobs",1
+"Fortnite players are all kids",1
+"Minecraft players are autistic",1
+"COD players are toxic",1
+"League players are the worst",1
+"Anime fans are all weebs",1
+"K-pop fans are crazy obsessed",1
+"Boy band fans are immature girls",1
+"Metal fans are satanic",1
+"Country fans are rednecks",1
+"Rap fans glorify violence",1
+"Classical fans are pretentious",1
+"Pop fans have no taste",1
+"EDM fans are all on drugs",1
+"Indie fans are hipster snobs",1
+"Jazz fans are boring old people",1
+"Musical theatre fans are all gay",1
+"Opera fans are out of touch",1
+"Sports fans are brain-dead",1
+"Soccer fans are hooligans",1
+"Football fans are violent",1
+"Basketball fans are thugs",1
+"Baseball fans are boring",1
+"Hockey fans are aggressive",1
+"Tennis fans are elitist",1
+"Golf fans are rich snobs",1
+"NASCAR fans are hillbillies",1
+"Wrestling fans are trashy",1
+"MMA fans are violent",1
+"Boxing fans are outdated",1
+"Crossfit people are cult members",1
+"Yoga people are pretentious",1
+"Gym rats are narcissists",1
+"Runners are show-offs",1
+"Cyclists are entitled",1
+"Hikers are tree-huggers",1
+"Campers are dirty hippies",1
+"You deserve everything bad that happens",1
+"I hope you get hit by a bus",1
+"The world would be better without you",1
+"You're a mistake and everyone knows it",1
+"Your parents regret having you",1
+"You'll die alone and unloved",1
+"Go play in traffic",1
+"Do everyone a favor and disappear",1
+"You're oxygen thief",1
+"Society would improve if you were gone",1
+"Good morning and have a wonderful day",0
+"Thank you so much for your help",0
+"I really appreciate your kindness",0
+"You did an excellent job on this",0
+"That's a great idea worth considering",0
+"I'm so proud of your achievements",0
+"Your hard work really paid off",0
+"You bring so much joy to others",0
+"I'm grateful to have you in my life",0
+"You make the world a better place",0
+"Your smile brightens everyone's day",0
+"You have such a kind heart",0
+"I admire your dedication and effort",0
+"You're an inspiration to many people",0
+"Your positivity is contagious",0
+"Thank you for being so understanding",0
+"I learn something new from you daily",0
+"Your creativity knows no bounds",0
+"You handle challenges with such grace",0
+"I value your friendship deeply",0
+"You always know how to help",0
+"Your wisdom is truly remarkable",0
+"I enjoy spending time with you",0
+"You're such a talented individual",0
+"Your perspective is always valuable",0
+"I respect your opinions greatly",0
+"You communicate so effectively",0
+"Your enthusiasm is wonderful",0
+"I appreciate your patience",0
+"You're doing amazing things",0
+"Your contributions make a difference",0
+"I'm lucky to know you",0
+"You have wonderful qualities",0
+"Your ideas are innovative",0
+"I admire your courage",0
+"You're very thoughtful",0
+"Your skills are impressive",0
+"I enjoy our conversations",0
+"You're a great listener",0
+"Your humor brightens my day",0
+"I appreciate your honesty",0
+"You're very reliable",0
+"Your dedication inspires me",0
+"I value your input",0
+"You're wonderfully creative",0
+"Your work ethic is admirable",0
+"I respect your choices",0
+"You're very compassionate",0
+"Your intelligence shows",0
+"I appreciate your support",0
+"You're incredibly helpful",0
+"The weather is lovely today",0
+"I enjoy reading good books",0
+"Music makes life more beautiful",0
+"Exercise helps me feel energized",0
+"Cooking is a relaxing hobby",0
+"Travel broadens the mind",0
+"Learning new skills is exciting",0
+"Nature is peaceful and calming",0
+"Art enriches our culture",0
+"Science advances human knowledge",0
+"Technology improves our lives",0
+"Education opens many doors",0
+"Volunteering helps the community",0
+"Meditation brings inner peace",0
+"Gardening is very therapeutic",0
+"Photography captures beautiful moments",0
+"Writing expresses creativity",0
+"Dancing is joyful exercise",0
+"Singing lifts the spirits",0
+"Reading expands imagination",0
+"Painting is artistic expression",0
+"Hiking connects us with nature",0
+"Swimming is great exercise",0
+"Yoga improves flexibility",0
+"Cycling is environmentally friendly",0
+"Running clears the mind",0
+"Walking is peaceful",0
+"Fishing is relaxing",0
+"Camping is adventurous",0
+"Pets bring companionship",0
+"Children are full of wonder",0
+"Elderly have valuable wisdom",0
+"Teachers shape future generations",0
+"Doctors help heal people",0
+"Nurses provide compassionate care",0
+"Firefighters show bravery",0
+"Police officers protect communities",0
+"Soldiers serve their country",0
+"Scientists discover new things",0
+"Engineers solve problems",0
+"Artists inspire emotions",0
+"Musicians create beautiful sounds",0
+"Writers tell meaningful stories",0
+"Farmers feed the world",0
+"Chefs create delicious food",0
+"Athletes demonstrate dedication",0
+"Volunteers give selflessly",0
+"Parents nurture their children",0
+"Friends provide support",0
+"Neighbors build community",0
+"Colleagues collaborate effectively",0
+"Mentors guide others",0
+"Leaders inspire change",0
+"Diversity strengthens society",0
+"Inclusion benefits everyone",0
+"Respect creates harmony",0
+"Kindness costs nothing",0
+"Empathy builds connections",0
+"Compassion heals wounds",0
+"Understanding bridges gaps",0
+"Patience yields results",0
+"Forgiveness brings peace",0
+"Gratitude improves happiness",0
+"Honesty builds trust",0
+"Integrity guides actions",0
+"Courage overcomes fear",0
+"Perseverance achieves goals",0
+"Hope inspires action",0
+"Faith provides strength",0
+"Love conquers hate",0
+"Peace is precious",0
+"Freedom is fundamental",0
+"Justice is essential",0
+"Equality is important",0
+"Human rights matter",0
+"Democracy empowers people",0
+"Education liberates minds",0
+"Healthcare is vital",0
+"Clean water is necessary",0
+"Food security is crucial",0
+"Shelter is a basic need",0
+"Safety is important",0
+"Community builds strength",0
+"Cooperation achieves more",0
+"Collaboration produces results",0
+"Teamwork makes things work",0
+"Partnership creates value",0
+"Friendship enriches life",0
+"Family provides foundation",0
+"Relationships need nurturing",0
+"Communication is key",0
+"Listening shows respect",0
+"Speaking kindly matters",0
+"Smiling spreads joy",0
+"Laughing improves health",0
+"Hugging provides comfort",0
+"Helping others feels good",0
+"Sharing creates abundance",0
+"Giving brings happiness",0
+"Receiving gracefully is important",0
+"Learning never stops",0
+"Growing is lifelong",0
+"Changing is natural",0
+"Adapting shows strength",0
+"Evolving is necessary",0
+"Improving is continuous",0
+"Succeeding takes effort",0
+"Failing teaches lessons",0
+"Trying is courageous",0
+"Attempting shows initiative",0
+"Exploring discovers new things",0
+"Discovering excites curiosity",0
+"Creating expresses self",0
+"Building makes progress",0
+"Developing enhances skills",0
+"Advancing moves forward",0
+"Progressing improves situations",0
+"Achieving feels rewarding",0
+"Accomplishing builds confidence",0
+"Completing brings satisfaction",0
+"Finishing provides closure",0
+"Morning coffee tastes great",0
+"Sunset views are stunning",0
+"Fresh air is refreshing",0
+"Warm sunshine feels nice",0
+"Cool breeze is pleasant",0
+"Rain sounds are soothing",0
+"Snow days are fun",0
+"Spring flowers are beautiful",0
+"Summer days are enjoyable",0
+"Autumn colors are gorgeous",0
+"Winter nights are cozy",0
+"Birthday celebrations are special",0
+"Holiday gatherings bring joy",0
+"Weekend relaxation is needed",0
+"Vacation time is wonderful",0
+"Movie nights are entertaining",0
+"Game nights are fun",0
+"Dinner parties are social",0
+"Coffee dates are pleasant",0
+"Lunch meetings are productive",0
+"Breakfast is important",0
+"Desserts are delightful",0
+"Snacks provide energy",0
+"Fruits are healthy",0
+"Vegetables are nutritious",0
+"Water hydrates well",0
+"Sleep restores energy",0
+"Rest is necessary",0
+"Relaxation reduces stress",0
+"Exercise improves health",0
+"Stretching feels good",0
+"Deep breathing calms",0
+"Meditation centers mind",0
+"Mindfulness brings awareness",0
+"Reflection provides insight",0
+"Journaling organizes thoughts",0
+"Planning helps achieve goals",0
+"Organizing reduces chaos",0
+"Cleaning creates space",0
+"Decorating personalizes home",0
+"Comfort makes life better",0
+"Convenience saves time",0
+"Efficiency improves productivity",0
+"Quality enhances experience",0
+"Value provides worth",0
+"Beauty inspires appreciation",0
+"Style expresses personality",0
+"Taste varies personally",0
+"Preference is individual",0
+"Choice is freedom",0
+"Option provides flexibility",0
+"Variety adds interest",0
+"Diversity enriches experience",0
+"Difference makes unique",0
+"Uniqueness is valuable",0
+"Originality shows creativity",0
+"Innovation drives progress",0
+"Invention solves problems",0
+"Discovery expands knowledge",0
+"Research advances understanding",0
+"Study improves expertise",0
+"Practice builds mastery",0
+"Training develops skills",0
+"Experience teaches lessons",0
+"Wisdom comes with time",0
+"Knowledge is power",0
+"Intelligence is gift",0
+"Talent is special",0
+"Ability is capacity",0
+"Capability enables achievement",0
+"Potential is promise",0
+"Opportunity is chance",0
+"Possibility is hope",0
+"Probability suggests likelihood",0
+"Certainty provides confidence",0
+"Truth is important",0
+"Fact is reality",0
+"Evidence supports claims",0
+"Proof validates assertions",0
+"Logic guides thinking",0
+"Reason directs decisions",0
+"Sense makes meaning",0
+"Common sense is practical",0
+"Wisdom guides choices",0
