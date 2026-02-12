@@ -1,4 +1,12 @@
 {
+  "scripts": {
+    "backend:start": "start_backend.ps1",
+    "backend:start:prod": "start_server.bat",
+    "backend:start:dev": "powershell -ExecutionPolicy Bypass -Command \".\\.venv\\Scripts\\Activate.ps1; python run_flask_dev.py\"",
+    "frontend:start": "npm --prefix frontend-react start",
+    "frontend:build": "npm --prefix frontend-react run build",
+    "app:build-and-run": "powershell -ExecutionPolicy Bypass -File scripts\\build_and_run.ps1"
+  },
   "dependencies": {
     "mongodb": "^7.1.0"
   }

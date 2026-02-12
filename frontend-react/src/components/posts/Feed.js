@@ -14,6 +14,7 @@ function Feed({ user, onModerationAlert }) {
 
   const fetchPosts = async () => {
     try {
+      setError('');
       const response = await postAPI.getFeed();
       setPosts(response.data.posts || []);
     } catch (err) {
