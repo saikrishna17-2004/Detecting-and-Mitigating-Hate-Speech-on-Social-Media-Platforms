@@ -17,6 +17,7 @@ pandas==2.0.3
 nltk==3.8.1
 textblob==0.17.1
 langdetect==1.0.9
+googletrans==4.0.0rc1
 
 # Frontend
 streamlit==1.29.0

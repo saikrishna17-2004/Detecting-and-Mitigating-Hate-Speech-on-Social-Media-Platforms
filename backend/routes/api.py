@@ -30,10 +30,43 @@ from backend.database import (
 )
 from backend.models.detector import detector
 from backend.utils.email_service import email_service
+from backend.utils.api_keys import (
+    create_api_key,
+    validate_api_key,
+    track_api_call,
+    get_api_usage,
+    list_user_api_keys
+)
 from datetime import datetime
 import os
+from functools import wraps
 
 api_bp = Blueprint('api', __name__)
+
+# API Key authentication decorator (optional - for external API access)
+def require_api_key_optional(f):
+    """Optional API key check - tracks usage if key provided"""
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        api_key = request.headers.get('X-API-Key')
+        
+        if api_key:
+            # Validate and track if API key provided
+            is_valid, key_doc, error = validate_api_key(api_key)
+            if not is_valid:
+                return jsonify({'error': error}), 401
+            
+            # Track API call
+            track_api_call(api_key)
+            
+            # Add key info to request context
+            request.api_key_tier = key_doc.get('tier')
+        else:
+            # No API key - allow for internal/frontend use
+            request.api_key_tier = None
+        
+        return f(*args, **kwargs)
+    return decorated_function
 
 # Authentication endpoints
 @api_bp.route('/auth/register', methods=['POST'])
@@ -105,8 +138,35 @@ except Exception:
     BLOCK_CONFIDENCE = 0.8
 
 @api_bp.route('/analyze', methods=['POST'])
+@require_api_key_optional
 def analyze_text():
-    """Analyze text for hate speech"""
+    """
+    Analyze text for hate speech with multi-language support
+    
+    Headers:
+        X-API-Key: Optional API key for external access
+    
+    Body:
+        {
+            "text": "Text to analyze",
+            "user_id": "optional_user_id",
+            "username": "optional_username"
+        }
+    
+    Response:
+        {
+            "success": true,
+            "result": {
+                "is_hate_speech": false,
+                "confidence": 0.95,
+                "category": "none",
+                "language": "en",
+                "translated": false
+            },
+            "action_taken": "none",
+            "api_tier": "free"
+        }
+    """
     try:
         data = request.get_json()
         
@@ -117,7 +177,7 @@ def analyze_text():
         user_id = data.get('user_id')
         username = data.get('username', f'user_{user_id}')
         
-        # Analyze text
+        # Analyze text (now with multi-language support)
         result = detector.analyze(text)
         
         # Get or create user
@@ -146,7 +206,8 @@ def analyze_text():
             'result': result,
             'action_taken': action_taken,
             'user_status': to_user_dict(user) if user else None,
-            'message': get_action_message(action_taken, user.get('warning_count', 0) if user else 0)
+            'message': get_action_message(action_taken, user.get('warning_count', 0) if user else 0),
+            'api_tier': request.api_key_tier  # Show which tier was used
         }), 200
         
     except Exception as e:
@@ -680,3 +741,173 @@ def get_action_message(action, warning_count):
         return f"⚠️ Warning {warning_count}/{MAX_WARNINGS}: Your content contains hate speech. Further violations will result in suspension."
     else:
         return "✅ Content is appropriate."
+
+# =============================================================================
+# API Key Management Endpoints (SaaS Features)
+# =============================================================================
+
+@api_bp.route('/api-keys/generate', methods=['POST'])
+def generate_api_key():
+    """
+    Generate a new API key for a user
+    
+    Body:
+        {
+            "user_id": "user123",
+            "tier": "free"  // free, pro, or enterprise
+        }
+    
+    Response:
+        {
+            "success": true,
+            "api_key": "xxx",  // Show once!
+            "tier": "free",
+            "calls_limit": 1000
+        }
+    """
+    try:
+        data = request.get_json()
+        user_id = data.get('user_id')
+        tier = data.get('tier', 'free')
+        
+        if not user_id:
+            return jsonify({'error': 'user_id required'}), 400
+        
+        if tier not in ['free', 'pro', 'enterprise']:
+            return jsonify({'error': 'Invalid tier. Must be free, pro, or enterprise'}), 400
+        
+        # Create API key
+        key_info = create_api_key(user_id, tier)
+        
+        return jsonify({
+            'success': True,
+            'api_key': key_info['api_key'],
+            'tier': key_info['tier'],
+            'calls_limit': key_info['calls_limit'],
+            'message': '⚠️ Save this API key! It will not be shown again.'
+        }), 201
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@api_bp.route('/api-keys/usage', methods=['GET'])
+def check_api_usage():
+    """
+    Check API key usage statistics
+    
+    Headers:
+        X-API-Key: Your API key
+    
+    Response:
+        {
+            "tier": "free",
+            "calls_used": 45,
+            "calls_limit": 1000,
+            "calls_remaining": 955
+        }
+    """
+    try:
+        api_key = request.headers.get('X-API-Key')
+        
+        if not api_key:
+            return jsonify({'error': 'X-API-Key header required'}), 401
+        
+        usage = get_api_usage(api_key)
+        
+        if not usage:
+            return jsonify({'error': 'Invalid API key'}), 401
+        
+        return jsonify({
+            'success': True,
+            **usage
+        }), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@api_bp.route('/api-keys/list/<user_id>', methods=['GET'])
+def list_api_keys(user_id):
+    """
+    List all API keys for a user
+    
+    Response:
+        {
+            "success": true,
+            "api_keys": [...]
+        }
+    """
+    try:
+        keys = list_user_api_keys(user_id)
+        
+        return jsonify({
+            'success': True,
+            'api_keys': keys
+        }), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+# =============================================================================
+# Social Media Integration Endpoints (Webhook Support)
+# =============================================================================
+
+@api_bp.route('/webhook/analyze', methods=['POST'])
+@require_api_key_optional
+def webhook_analyze():
+    """
+    Webhook endpoint for external social media platforms
+    
+    Headers:
+        X-API-Key: Your API key (required for webhooks)
+        X-Callback-URL: Optional callback URL to POST results
+    
+    Body:
+        {
+            "text": "Content to analyze",
+            "platform": "twitter",
+            "post_id": "123456",
+            "user_id": "user123"
+        }
+    
+    Response:
+        {
+            "success": true,
+            "result": {...},
+            "should_block": true/false
+        }
+    """
+    try:
+        # Require API key for webhooks
+        api_key = request.headers.get('X-API-Key')
+        if not api_key:
+            return jsonify({'error': 'API key required for webhook access'}), 401
+        
+        data = request.get_json()
+        text = data.get('text')
+        platform = data.get('platform', 'unknown')
+        post_id = data.get('post_id')
+        
+        if not text:
+            return jsonify({'error': 'text required'}), 400
+        
+        # Analyze
+        result = detector.analyze(text)
+        
+        # Determine if should block
+        should_block = result['is_hate_speech'] and result['confidence'] >= 0.8
+        
+        response = {
+            'success': True,
+            'result': result,
+            'should_block': should_block,
+            'platform': platform,
+            'post_id': post_id,
+            'timestamp': datetime.utcnow().isoformat()
+        }
+        
+        # Optional: Send callback
+        callback_url = request.headers.get('X-Callback-URL')
+        if callback_url:
+            # TODO: Implement async callback posting
+            pass
+        
+        return jsonify(response), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
