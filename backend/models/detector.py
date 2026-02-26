@@ -81,6 +81,21 @@ class HateSpeechDetector:
         self.model_loaded = False
         self.offensive_keywords = set()
         self.offensive_phrases = set()
+        self.high_precision_english_keywords = {
+            'terrorist', 'terrorists', 'subhuman', 'vermin', 'scum', 'filth',
+            'traitor', 'infiltrator', 'genocide', 'ethnic', 'cleansing',
+            'faggot', 'dyke', 'tranny', 'kike', 'chink', 'paki', 'raghead',
+            'camel', 'nigger', 'wetback', 'spic', 'beaner', 'goat',
+            'retard', 'mongoloid', 'cripple', 'gimp', 'bhosdike', 'madarchod',
+            'behenchod', 'chutiya', 'gandu', 'harami', 'randi', 'lawde', 'lund'
+        }
+        self.ambiguous_english_keywords = {
+            'disease', 'cancer', 'plague', 'virus', 'bacteria', 'infection',
+            'tumor', 'acid', 'poison', 'alien', 'aliens', 'devil', 'demonic',
+            'satanic', 'warlock', 'witches', 'sorcerers', 'execute', 'burn',
+            'hang', 'slash', 'cut', 'shoot', 'explode', 'anthrax', 'smallpox',
+            'ebola', 'aids', 'parasite'
+        }
         self.romanized_hinglish_roots = {
             'behenchod', 'behenkelode', 'bhenkelode',
             'madarchod', 'madrchod', 'bhosdike',
@@ -238,8 +253,16 @@ class HateSpeechDetector:
             return 0.95
 
         # Check keywords via token-set overlap (much faster than regex per keyword)
-        if tokens.intersection(self.offensive_keywords):
-            return 0.92
+        matched_keywords = tokens.intersection(self.offensive_keywords)
+        if matched_keywords:
+            # High-precision direct slurs/abuse terms
+            if matched_keywords.intersection(self.high_precision_english_keywords):
+                return 0.92
+
+            # Ambiguous keywords should only trigger with explicit group-targeting context
+            non_ambiguous = matched_keywords.difference(self.ambiguous_english_keywords)
+            if non_ambiguous and re.search(r'\b(all|those|these|them|they|community|group|people|race|religion)\b', text_lower):
+                return 0.90
 
         # Obfuscated latin-script abuse (e.g., "bh3n k3 l0d3")
         normalized_text = self._normalize_obfuscated_text(text)
