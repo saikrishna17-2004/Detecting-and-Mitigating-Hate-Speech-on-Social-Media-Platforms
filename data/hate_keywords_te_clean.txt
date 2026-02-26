@@ -1,0 +1,28 @@
+# Telugu hate speech keywords/phrases
+# One term per line; lines starting with # are comments
+# Only most severe, universally offensive terms
+
+కుక్క
+పండి
+దుష్టుడు
+జంతువు
+నీచుడు
+ఉగ్రవాది
+దేశద్రోహి
+నేరస్తుల సమూహం
+కొడుకు
+వేశ్య
+రాక్షసుడు
+దయ్యం
+అసురుడు
+కసాయి
+చంపు
+బాల్చు
+తరిమేయు
+చట్టవిరుద్ధ చొరబాటుదారులు
+దేశ శత్రువులు
+ద్రోహుల
+హంతకుడు
+రక్తపిపాసి
+అసభ్యమైన జంతువు
+నాశనం

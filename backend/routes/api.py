@@ -131,11 +131,12 @@ def logout():
 # Configuration
 MAX_WARNINGS = 3
 # Minimum confidence required to block a post automatically (0.0-1.0)
+# Set very high to only block extremely severe hate speech
 # Read from environment so it can be tuned without code changes
 try:
-    BLOCK_CONFIDENCE = float(os.environ.get('BLOCK_CONFIDENCE', '0.8'))
+    BLOCK_CONFIDENCE = float(os.environ.get('BLOCK_CONFIDENCE', '0.9'))
 except Exception:
-    BLOCK_CONFIDENCE = 0.8
+    BLOCK_CONFIDENCE = 0.9
 
 @api_bp.route('/analyze', methods=['POST'])
 @require_api_key_optional
@@ -516,17 +517,120 @@ def update_lexicon():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+# Per-language lexicon management
+@api_bp.route('/admin/lexicon/languages', methods=['GET'])
+def get_language_lexicons():
+    """Get stats for all loaded language lexicons."""
+    try:
+        lexicons_info = {}
+        for lang_code, (keywords, phrases) in detector.language_lexicons.items():
+            lexicons_info[lang_code] = {
+                'words_count': len(keywords),
+                'phrases_count': len(phrases),
+                'path': f'data/hate_keywords_{lang_code}.txt'
+            }
+        
+        return jsonify({
+            'success': True,
+            'lexicons': lexicons_info,
+            'total_languages': len(lexicons_info)
+        }), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@api_bp.route('/admin/lexicon/language/<lang_code>', methods=['POST'])
+def update_language_lexicon(lang_code):
+    """Update lexicon for a specific language.
+    Body JSON: { content: string, mode: 'append'|'replace' }
+    """
+    try:
+        data = request.get_json() or {}
+        content = (data.get('content') or '').strip()
+        mode = (data.get('mode') or 'append').lower()
+        
+        if not content:
+            return jsonify({'error': 'content is required'}), 400
+        if mode not in ('append', 'replace'):
+            return jsonify({'error': "mode must be 'append' or 'replace'"}), 400
+        
+        path = f'data/hate_keywords_{lang_code}.txt'
+        
+        # Ensure directory exists
+        import os
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+        
+        if mode == 'replace' and os.path.exists(path):
+            # Backup existing
+            import shutil
+            shutil.copy2(path, path + '.bak')
+        
+        # Normalize newlines
+        normalized = '\n'.join([line.strip() for line in content.splitlines() if line.strip()]) + '\n'
+        
+        if mode == 'append' and os.path.exists(path):
+            with open(path, 'a', encoding='utf-8') as f:
+                f.write(normalized)
+        else:
+            with open(path, 'w', encoding='utf-8') as f:
+                f.write(f'# {lang_code.upper()} hate speech keywords/phrases\n')
+                f.write('# One term per line; lines starting with # are comments\n')
+                f.write(normalized)
+        
+        # Reload for this language
+        detector.load_language_lexicon(lang_code, path)
+        
+        keywords, phrases = detector.language_lexicons.get(lang_code, (set(), set()))
+        
+        return jsonify({
+            'success': True,
+            'language': lang_code,
+            'path': path,
+            'mode': mode,
+            'words_count': len(keywords),
+            'phrases_count': len(phrases)
+        }), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@api_bp.route('/admin/lexicon/language/<lang_code>/reload', methods=['POST'])
+def reload_language_lexicon(lang_code):
+    """Reload lexicon for a specific language."""
+    try:
+        path = f'data/hate_keywords_{lang_code}.txt'
+        detector.load_language_lexicon(lang_code, path)
+        
+        keywords, phrases = detector.language_lexicons.get(lang_code, (set(), set()))
+        
+        return jsonify({
+            'success': True,
+            'language': lang_code,
+            'path': path,
+            'words_count': len(keywords),
+            'phrases_count': len(phrases)
+        }), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
 @api_bp.route('/posts', methods=['POST'])
 def create_post():
     """Create a new post"""
     try:
-        data = request.get_json()
-        content = data.get('content')
+        data = request.get_json(silent=True) or {}
+        content = (data.get('content') or '').strip()
         user_id = data.get('user_id')
         image_url = data.get('image_url')
         
-        if not content or not user_id:
-            return jsonify({'error': 'Content and user_id are required'}), 400
+        if not user_id:
+            return jsonify({'error': 'user_id is required'}), 400
+
+        try:
+            user_id = int(user_id)
+        except (TypeError, ValueError):
+            return jsonify({'error': 'user_id must be a valid integer'}), 400
+
+        # Allow either text posts or image posts (or both)
+        if not content and not image_url:
+            return jsonify({'error': 'Either content or image is required'}), 400
         
         user = get_user_by_id(user_id)
         if not user:
@@ -536,8 +640,16 @@ def create_post():
         if user.get('is_suspended'):
             return jsonify({'error': 'Your account is suspended'}), 403
         
-        # Analyze content for hate speech
-        analysis = detector.analyze(content)
+        # Analyze textual content for hate speech (image-only posts skip text analysis)
+        analysis = detector.analyze(content) if content else {
+            'is_hate_speech': False,
+            'confidence': 0.0,
+            'category': 'none',
+            'language': 'unknown',
+            'normalized_language': 'unknown',
+            'translated': False,
+            'original_text': None,
+        }
         
         # Only block posts that are high-confidence hate speech. Lower-confidence
         # detections are treated as warnings: the post is created but the analysis

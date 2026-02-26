@@ -132,7 +132,7 @@ function Login({ onLogin }) {
         >
           <Typography variant="body2">
             Don't have an account?{' '}
-            <Link component={RouterLink} to="/register" underline="none">
+            <Link component={RouterLink} to="/register" state={{ fromLogin: true }} underline="none">
               Sign up
             </Link>
           </Typography>

@@ -30,7 +30,11 @@ CATEGORIES = [
 ]
 
 # Supported Languages
-SUPPORTED_LANGUAGES = ['en', 'es', 'fr', 'de', 'it', 'pt']
+SUPPORTED_LANGUAGES = [
+    'en', 'es', 'fr', 'de', 'it', 'pt',
+    'hi', 'bn', 'te', 'mr', 'ta', 'ur', 'gu', 'kn', 'ml', 'or', 'pa',
+    'as', 'sd', 'ne', 'sa', 'mai', 'kok', 'ks', 'mni', 'doi', 'sat', 'bho'
+]
 
 # Feature Flags
 ENABLE_MULTILINGUAL = True

@@ -5,7 +5,11 @@ Handles API key generation, validation, and usage tracking
 import secrets
 import hashlib
 from datetime import datetime
-from backend.database import db
+from backend.database import _get_db
+
+
+def _db():
+    return _get_db()[1]
 
 # API Tier limits (calls per month)
 TIER_LIMITS = {
@@ -47,7 +51,7 @@ def create_api_key(user_id, tier='free'):
         'last_used': None
     }
     
-    result = db.api_keys.insert_one(key_doc)
+    result = _db().api_keys.insert_one(key_doc)
     
     return {
         'api_key': api_key,  # Return unhashed - show to user once!
@@ -67,7 +71,7 @@ def validate_api_key(api_key):
         return False, None, 'API key required'
     
     hashed_key = hash_api_key(api_key)
-    key_doc = db.api_keys.find_one({'hashed_key': hashed_key})
+    key_doc = _db().api_keys.find_one({'hashed_key': hashed_key})
     
     if not key_doc:
         return False, None, 'Invalid API key'
@@ -90,7 +94,7 @@ def track_api_call(api_key):
     """
     hashed_key = hash_api_key(api_key)
     
-    db.api_keys.update_one(
+    _db().api_keys.update_one(
         {'hashed_key': hashed_key},
         {
             '$inc': {'calls_used': 1},
@@ -106,7 +110,7 @@ def get_api_usage(api_key):
         dict: Usage statistics
     """
     hashed_key = hash_api_key(api_key)
-    key_doc = db.api_keys.find_one({'hashed_key': hashed_key})
+    key_doc = _db().api_keys.find_one({'hashed_key': hashed_key})
     
     if not key_doc:
         return None
@@ -124,7 +128,7 @@ def reset_monthly_usage():
     """
     Reset monthly usage counters (run via cron job monthly)
     """
-    result = db.api_keys.update_many(
+    result = _db().api_keys.update_many(
         {},
         {'$set': {'calls_used': 0}}
     )
@@ -135,7 +139,7 @@ def deactivate_api_key(api_key):
     """Deactivate an API key"""
     hashed_key = hash_api_key(api_key)
     
-    result = db.api_keys.update_one(
+    result = _db().api_keys.update_one(
         {'hashed_key': hashed_key},
         {'$set': {'is_active': False}}
     )
@@ -144,7 +148,7 @@ def deactivate_api_key(api_key):
 
 def list_user_api_keys(user_id):
     """List all API keys for a user (hashed)"""
-    keys = db.api_keys.find({'user_id': user_id})
+    keys = _db().api_keys.find({'user_id': user_id})
     
     return [{
         'tier': k.get('tier'),

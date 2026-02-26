@@ -1,0 +1,30 @@
+# Tamil hate speech keywords/phrases
+# One term per line; lines starting with # are comments
+# Only most severe, universally offensive terms
+
+நாய்
+பன்றி
+அயோக்கியன்
+வில்லன்
+தீவிரவாதி
+நாட்டுத்தூரோகி
+குற்றவாளி சமுதாய
+அக்கிரம
+சூத்து
+தேவடியா
+மிருக வாதம்
+ராக்ஷசன்
+பேய்
+அரக்கன்
+கொலைகாரன்
+கொல்
+இரத்த வெறி
+பொய்
+கள்
+விரட்டு
+சட்ட விரோத
+எதிரி
+த்துரோகி
+அழித்து
+விலங்கு
+வன்முறை

@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { Box } from '@mui/material';
 
 // Components
@@ -12,26 +12,31 @@ import CreatePost from './components/posts/CreatePost';
 import AdminDashboard from './components/admin/AdminDashboard';
 import ModerationAlert from './components/moderation/ModerationAlert';
 
+function RegisterRoute({ user, onRegister }) {
+  const location = useLocation();
+  const canAccessRegister = location.state?.fromLogin === true;
+
+  if (user) {
+    return <Navigate to="/" replace />;
+  }
+
+  if (!canAccessRegister) {
+    return <Navigate to="/login" replace />;
+  }
+
+  return <Register onRegister={onRegister} />;
+}
+
 function App() {
   const [user, setUser] = useState(null);
   const [moderationAlert, setModerationAlert] = useState(null);
 
-  useEffect(() => {
-    // Check if user is logged in (from localStorage)
-    const savedUser = localStorage.getItem('user');
-    if (savedUser) {
-      setUser(JSON.parse(savedUser));
-    }
-  }, []);
-
   const handleLogin = (userData) => {
     setUser(userData);
-    localStorage.setItem('user', JSON.stringify(userData));
   };
 
   const handleLogout = () => {
     setUser(null);
-    localStorage.removeItem('user');
   };
 
   const showModerationAlert = (alert) => {
@@ -60,7 +65,7 @@ function App() {
         />
         <Route 
           path="/register" 
-          element={user ? <Navigate to="/" /> : <Register onRegister={handleLogin} />} 
+          element={<RegisterRoute user={user} onRegister={handleLogin} />} 
         />
         <Route 
           path="/" 

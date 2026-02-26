@@ -1,0 +1,383 @@
+# English hate speech keywords/phrases
+# One term per line; lines starting with # are comments
+
+# Severe slurs and dehumanizing terms
+terrorist
+subhuman
+vermin
+scum
+filth
+traitor
+infiltrator
+illegal alien
+destroy
+eliminate
+eradicate
+wipe out
+kill them
+wipe them out
+genocide
+dehumanize
+deviant
+pervert
+monster
+beast
+filthy
+disgusting
+abomination
+cockroach
+rat
+snake
+parasite
+disease
+cancer
+plague
+evil
+wicked
+vile
+despicable
+loathsome
+repugnant
+abhorrent
+detestable
+barbarian
+savage
+uncivilized
+primitive
+inferior
+worthless
+useless
+retard
+moron
+idiot
+stupid
+dumb
+imbecile
+retarded
+mental
+psycho
+deranged
+insane
+mad
+crazy
+lunatic
+maniac
+sociopath
+psychopath
+sadist
+masochist
+rapist
+murderer
+killer
+murderous
+bloodlust
+bloodthirsty
+slaughter
+massacre
+slaughtered
+
+# Multi-word phrases (violence/genocide advocacy)
+must be killed
+must be eliminated
+must be eradicated
+must be destroyed
+should all die
+should all be killed
+kill all
+eliminate all
+destroy all
+wipe out all
+murder all
+massacre all
+commit genocide
+ethnic cleansing
+cleanse the population
+purify the race
+pure blood
+racial purity
+blood and soil
+final solution
+extermination camp
+death camps
+concentration camps
+gas chambers
+ovens
+holocaust denialism
+blood libel
+jewish conspiracy
+zionist conspiracy
+replacement theory
+great replacement
+white genocide
+they are replacing us
+invading our country
+invaders occupying
+rape gangs
+grooming gangs
+pedo ring
+pedophile ring
+child sacrifice
+organ harvesting
+blood sacrifice
+ritual murder
+poison wells
+control the media
+control the banks
+control the government
+control society
+puppeteers pulling strings
+shadow government
+deep state
+new world order
+illuminati
+reptilians
+lizard people
+shape shifters
+satanic
+demonic
+devil worshippers
+witches
+warlocks
+sorcerers
+merpeople
+aliens
+extraterrestrials
+greys
+aliens among us
+aliens infiltrated
+human-alien hybrids
+
+# Slurs and insults
+faggot
+dyke
+tranny
+trannie
+transgender agenda
+gay agenda
+agenda pushing
+sodomite
+buggery
+carpet muncher
+cock sucker
+cocksucker 
+fag
+homo
+queer
+libtard
+snowflake
+cuck
+soyboy
+beta male
+incel
+neckbeard
+basement dweller
+welfare queen
+ghetto
+thugs
+animals
+savages
+mongoloid
+retard
+tard
+sped
+special ed
+downy
+shortbus
+mong
+spaz
+spastic
+cripple
+crip
+gimp
+lame
+blind as a bat
+deaf as a doornal
+dumb as a rock
+dumber than a doornail
+stupid as
+thick as
+slow as
+lazy
+shiftless
+workshy
+layabout
+bum
+hobo
+vagrant
+homeless
+drug addict
+junkie
+dope fiend
+pothead
+crackhead
+alcoholic
+drunk
+drunk driver
+drunk drivers
+drunk driving
+
+# Religious/ethnic slurs
+kike
+hymie
+sheeny
+schlomo
+rabbi
+yid
+infidel
+apostate
+heretic
+blasphemer
+sahib
+coolie
+chink
+jap
+nip
+gook
+slant eyes
+flat face
+slope
+paki
+raghead
+towel head
+sand nigger
+camel jockey
+camel fucker
+goat fucker
+dot head
+curry muncher
+desi
+hindu
+hindoo
+mussy
+mooslim
+mohammedan
+camel driver
+desert rat
+greaser
+spic
+beaner
+narc
+peon
+wetback
+polack
+bohunk
+hunky
+dago
+guinea
+gringo
+cracker
+redneck
+cracker barrel
+hill billy
+white trash
+white nigger
+honky
+honkey
+chalk face
+pale face
+pillow biter
+faggot
+fairy
+queen
+nellie
+nancy
+poof
+pansy
+sissy
+softie
+softy
+wimp
+weakling
+nobody
+nothing
+zero
+zilch
+nada
+squat
+
+# Violent language
+kill
+murder
+slaughter
+massacre
+genocide
+exterminate
+execute
+decapitate
+behead
+burn
+lynch
+hang
+throttle
+strangle
+choke
+bash
+bash their brains
+smash their heads
+crush their skulls
+break their necks
+slit throats
+slit wrists
+stab
+slash
+cut
+shoot
+gun down
+blow up
+detonate
+explode
+dynamite
+c4
+plastic explosive
+semtex
+tnt
+nitroglycerin
+acid
+poison
+strychnine
+cyanide
+arsenic
+rat poison
+weed killer
+herbicide
+pesticide
+DDT
+anthrax
+smallpox
+ebola
+plague
+aids
+cancer
+tumor
+disease
+infection
+virus
+bacteria
+parasite
+
+# Romanized Hindi / Hinglish severe abuse terms
+behenchod
+behen chhod
+bhenchod
+bhen chhod
+behen ke lode
+bhen ke lode
+behen ke lund
+bhen ke lund
+madarchod
+madar chod
+madrchod
+bhosdike
+bhosdi ke
+chutiya
+chutiya
+chodu
+gandu
+harami
+randi
+randwe
+lawde
+laude
+lund
+maa chud
+maa chuda

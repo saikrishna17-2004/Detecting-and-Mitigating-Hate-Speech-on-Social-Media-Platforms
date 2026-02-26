@@ -12,6 +12,7 @@ import {
 } from '@mui/material';
 import { PhotoCamera, Close } from '@mui/icons-material';
 import { postAPI, analysisAPI } from '../../services/api';
+import IndianLanguageKeyboard from '../keyboard/IndianLanguageKeyboard';
 
 function CreatePost({ user, onModerationAlert }) {
   const [caption, setCaption] = useState('');
@@ -44,6 +45,12 @@ function CreatePost({ user, onModerationAlert }) {
     setLoading(true);
 
     try {
+      if (!user || user.id === undefined || user.id === null) {
+        setError('Session expired. Please log in again.');
+        setLoading(false);
+        return;
+      }
+
       // First, analyze caption for hate speech
       if (caption.trim()) {
         const analysisResponse = await analysisAPI.analyzeText(
@@ -150,10 +157,15 @@ function CreatePost({ user, onModerationAlert }) {
             placeholder="Write a caption..."
             value={caption}
             onChange={(e) => setCaption(e.target.value)}
-            sx={{ mb: 2 }}
+            sx={{ mb: 0 }}
           />
 
-          <Box sx={{ display: 'flex', gap: 2 }}>
+          <IndianLanguageKeyboard
+            value={caption}
+            onChange={setCaption}
+          />
+
+          <Box sx={{ display: 'flex', gap: 2, mt: 2 }}>
             <Button
               variant="outlined"
               fullWidth

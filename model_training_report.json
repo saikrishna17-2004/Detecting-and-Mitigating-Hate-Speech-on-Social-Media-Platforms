@@ -1,0 +1,308 @@
+{
+  "timestamp": "2026-02-26T20:10:32.553442",
+  "lexicon_stats": {
+    "Hindi": 66,
+    "Bengali": 63,
+    "Tamil": 25,
+    "Telugu": 28,
+    "Marathi": 30,
+    "Gujarati": 60,
+    "Kannada": 57,
+    "Malayalam": 57,
+    "Punjabi": 60,
+    "Urdu": 62
+  },
+  "total_lexicon_terms": 508,
+  "dataset_evaluation": {
+    "loaded": true,
+    "path": "data/train.csv",
+    "rows_total": 60127,
+    "rows_evaluated": 60127,
+    "passed": 41887,
+    "failed": 18240,
+    "accuracy": 69.66421075390423,
+    "numeric_label_profile": []
+  },
+  "validation_results": {
+    "Hindi": {
+      "passed": 5,
+      "failed": 0,
+      "accuracy": 100.0,
+      "details": [
+        {
+          "text": "वह आदमी हरामी है",
+          "expected": true,
+          "detected": true,
+          "confidence": 0.92,
+          "language": "hi",
+          "status": "✓ PASS"
+        },
+        {
+          "text": "सभी कश्मीरी जानवर हैं और मार डालो",
+          "expected": true,
+          "detected": true,
+          "confidence": 0.92,
+          "language": "hi",
+          "status": "✓ PASS"
+        },
+        {
+          "text": "यह एक अच्छा दिन है",
+          "expected": false,
+          "detected": false,
+          "confidence": 0.0,
+          "language": "hi",
+          "status": "✓ PASS"
+        },
+        {
+          "text": "वह भारतीय है",
+          "expected": false,
+          "detected": false,
+          "confidence": 0.0,
+          "language": "hi",
+          "status": "✓ PASS"
+        },
+        {
+          "text": "चूतिया लोग सब गद्दार हैं",
+          "expected": true,
+          "detected": true,
+          "confidence": 0.92,
+          "language": "hi",
+          "status": "✓ PASS"
+        }
+      ]
+    },
+    "Bengali": {
+      "passed": 4,
+      "failed": 0,
+      "accuracy": 100.0,
+      "details": [
+        {
+          "text": "সে হারামজাদা লোক",
+          "expected": true,
+          "detected": true,
+          "confidence": 0.92,
+          "language": "bn",
+          "status": "✓ PASS"
+        },
+        {
+          "text": "সব কুকুর অযোগ্য প্রাণী",
+          "expected": true,
+          "detected": true,
+          "confidence": 0.92,
+          "language": "bn",
+          "status": "✓ PASS"
+        },
+        {
+          "text": "আজ সুন্দর দিন",
+          "expected": false,
+          "detected": false,
+          "confidence": 0.0,
+          "language": "bn",
+          "status": "✓ PASS"
+        },
+        {
+          "text": "তিনি শিক্ষক",
+          "expected": false,
+          "detected": false,
+          "confidence": 0.0,
+          "language": "bn",
+          "status": "✓ PASS"
+        }
+      ]
+    },
+    "Tamil": {
+      "passed": 4,
+      "failed": 0,
+      "accuracy": 100.0,
+      "details": [
+        {
+          "text": "அவன் மூட்டாள்",
+          "expected": true,
+          "detected": true,
+          "confidence": 0.92,
+          "language": "ta",
+          "status": "✓ PASS"
+        },
+        {
+          "text": "அந்த சமுதாயம் விலங்குகள்",
+          "expected": true,
+          "detected": true,
+          "confidence": 0.92,
+          "language": "ta",
+          "status": "✓ PASS"
+        },
+        {
+          "text": "நல்ல நாள்",
+          "expected": false,
+          "detected": false,
+          "confidence": 0.0,
+          "language": "ta",
+          "status": "✓ PASS"
+        },
+        {
+          "text": "அவர் நன்றாக இருக்கிறார்",
+          "expected": false,
+          "detected": false,
+          "confidence": 0.0,
+          "language": "ta",
+          "status": "✓ PASS"
+        }
+      ]
+    },
+    "Telugu": {
+      "passed": 4,
+      "failed": 0,
+      "accuracy": 100.0,
+      "details": [
+        {
+          "text": "అతను గాండూ",
+          "expected": true,
+          "detected": true,
+          "confidence": 0.92,
+          "language": "te",
+          "status": "✓ PASS"
+        },
+        {
+          "text": "ఆ సమూహం కుక్క",
+          "expected": true,
+          "detected": true,
+          "confidence": 0.92,
+          "language": "te",
+          "status": "✓ PASS"
+        },
+        {
+          "text": "ఇది మంచి రోజు",
+          "expected": false,
+          "detected": false,
+          "confidence": 0.0,
+          "language": "te",
+          "status": "✓ PASS"
+        },
+        {
+          "text": "నీవు మంచినట్లు ఉన్నావు",
+          "expected": false,
+          "detected": false,
+          "confidence": 0.0,
+          "language": "te",
+          "status": "✓ PASS"
+        }
+      ]
+    },
+    "Marathi": {
+      "passed": 3,
+      "failed": 1,
+      "accuracy": 75.0,
+      "details": [
+        {
+          "text": "तो हरामी माणूस आहे",
+          "expected": true,
+          "detected": false,
+          "confidence": 0.0,
+          "language": "mr",
+          "status": "✗ FAIL"
+        },
+        {
+          "text": "सर्व कुत्रे अयोग्य आहेत",
+          "expected": true,
+          "detected": true,
+          "confidence": 0.92,
+          "language": "mr",
+          "status": "✓ PASS"
+        },
+        {
+          "text": "हा चांगला दिवस आहे",
+          "expected": false,
+          "detected": false,
+          "confidence": 0.0,
+          "language": "mr",
+          "status": "✓ PASS"
+        },
+        {
+          "text": "तुम्ही बरे आहात",
+          "expected": false,
+          "detected": false,
+          "confidence": 0.0,
+          "language": "mr",
+          "status": "✓ PASS"
+        }
+      ]
+    },
+    "English": {
+      "passed": 5,
+      "failed": 0,
+      "accuracy": 100.0,
+      "details": [
+        {
+          "text": "All terrorists must be eliminated",
+          "expected": true,
+          "detected": true,
+          "confidence": 0.95,
+          "language": "en",
+          "status": "✓ PASS"
+        },
+        {
+          "text": "These people are subhuman vermin",
+          "expected": true,
+          "detected": true,
+          "confidence": 0.95,
+          "language": "en",
+          "status": "✓ PASS"
+        },
+        {
+          "text": "This is a beautiful day",
+          "expected": false,
+          "detected": false,
+          "confidence": 0.0,
+          "language": "en",
+          "status": "✓ PASS"
+        },
+        {
+          "text": "He is a good person",
+          "expected": false,
+          "detected": false,
+          "confidence": 0.0,
+          "language": "en",
+          "status": "✓ PASS"
+        },
+        {
+          "text": "Destroy all infiltrators",
+          "expected": true,
+          "detected": true,
+          "confidence": 0.96,
+          "language": "it",
+          "status": "✓ PASS"
+        }
+      ]
+    },
+    "Multilingual": {
+      "passed": 2,
+      "failed": 0,
+      "accuracy": 100.0,
+      "details": [
+        {
+          "text": "मुझे आज का दिन पसंद है लेकिन वह कश्मीरी हरामी है",
+          "expected": true,
+          "detected": true,
+          "confidence": 0.92,
+          "language": "hi",
+          "status": "✓ PASS"
+        },
+        {
+          "text": "This is good and terrorist should die",
+          "expected": true,
+          "detected": true,
+          "confidence": 0.92,
+          "language": "en",
+          "status": "✓ PASS"
+        }
+      ]
+    }
+  },
+  "overall": {
+    "total_passed": 27,
+    "total_failed": 1,
+    "overall_accuracy": 96.42857142857143,
+    "detection_threshold": 0.9,
+    "model_status": "TRAINED"
+  }
+}
