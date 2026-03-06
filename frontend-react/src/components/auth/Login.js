@@ -10,9 +10,10 @@ import {
   Link,
   Alert,
 } from '@mui/material';
-import { authAPI } from '../../services/api';
+import { authAPI, withApiFeedback } from '../../services/api';
+import { translate } from '../../i18n/translations';
 
-function Login({ onLogin }) {
+function Login({ onLogin, uiLanguage = 'english' }) {
   const [formData, setFormData] = useState({
     username: '',
     password: '',
@@ -33,16 +34,20 @@ function Login({ onLogin }) {
     setError('');
     setLoading(true);
 
-    try {
-      const response = await authAPI.login(formData);
-      const userData = response.data.user;
+    const result = await withApiFeedback({
+      request: () => authAPI.login(formData),
+      uiLanguage,
+      errorFallback: translate(uiLanguage, 'loginFailed'),
+      setError,
+    });
+
+    if (result.ok) {
+      const userData = result.response.data.user;
       onLogin(userData);
       navigate('/');
-    } catch (err) {
-      setError(err.response?.data?.error || 'Login failed. Please try again.');
-    } finally {
-      setLoading(false);
     }
+
+    setLoading(false);
   };
 
   return (
@@ -72,7 +77,7 @@ function Login({ onLogin }) {
               marginBottom: 3,
             }}
           >
-            Social Feed
+            {translate(uiLanguage, 'appName')}
           </Typography>
 
           {error && (
@@ -87,7 +92,7 @@ function Login({ onLogin }) {
               required
               fullWidth
               id="username"
-              label="Username"
+              label={translate(uiLanguage, 'username')}
               name="username"
               autoComplete="username"
               autoFocus
@@ -100,7 +105,7 @@ function Login({ onLogin }) {
               required
               fullWidth
               name="password"
-              label="Password"
+              label={translate(uiLanguage, 'password')}
               type="password"
               id="password"
               autoComplete="current-password"
@@ -115,7 +120,7 @@ function Login({ onLogin }) {
               sx={{ mt: 3, mb: 2 }}
               disabled={loading}
             >
-              {loading ? 'Logging in...' : 'Log In'}
+              {loading ? translate(uiLanguage, 'loggingIn') : translate(uiLanguage, 'logIn')}
             </Button>
           </Box>
         </Paper>
@@ -131,9 +136,9 @@ function Login({ onLogin }) {
           }}
         >
           <Typography variant="body2">
-            Don't have an account?{' '}
+            {translate(uiLanguage, 'dontHaveAccount')}{' '}
             <Link component={RouterLink} to="/register" state={{ fromLogin: true }} underline="none">
-              Sign up
+              {translate(uiLanguage, 'signUp')}
             </Link>
           </Typography>
         </Paper>

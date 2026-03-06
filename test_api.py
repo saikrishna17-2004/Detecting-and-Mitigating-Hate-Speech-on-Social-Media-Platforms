@@ -4,6 +4,23 @@ import time
 
 BASE_URL = "http://localhost:5000"
 
+
+def extract_prediction_fields(payload):
+    """Support both legacy flat and current nested analyze response formats."""
+    result = payload.get('result') if isinstance(payload, dict) else None
+
+    if isinstance(result, dict):
+        is_hate = bool(result.get('is_hate_speech', False))
+        confidence = float(result.get('confidence', 0.0) or 0.0)
+        category = result.get('category', 'none')
+        prediction = 'Hate Speech' if is_hate else 'Normal'
+        return prediction, confidence, category
+
+    prediction = payload.get('prediction', 'N/A') if isinstance(payload, dict) else 'N/A'
+    confidence = float(payload.get('confidence', 0.0) or 0.0) if isinstance(payload, dict) else 0.0
+    category = payload.get('category', 'N/A') if isinstance(payload, dict) else 'N/A'
+    return prediction, confidence, category
+
 print("\n" + "="*80)
 print("🧪 TESTING HATE SPEECH DETECTION API")
 print("="*80 + "\n")
@@ -37,9 +54,10 @@ for text in test_texts:
         
         if response.status_code == 200:
             result = response.json()
+            prediction, confidence, _ = extract_prediction_fields(result)
             print(f"✅ Text: {text[:50]}...")
-            print(f"   Prediction: {result.get('prediction', 'N/A')}")
-            print(f"   Confidence: {result.get('confidence', 0):.3f}")
+            print(f"   Prediction: {prediction}")
+            print(f"   Confidence: {confidence:.3f}")
             print(f"   Response time: {elapsed:.1f}ms\n")
         else:
             print(f"❌ Error {response.status_code}: {response.text}\n")
@@ -70,10 +88,11 @@ for text in hate_texts:
         
         if response.status_code == 200:
             result = response.json()
+            prediction, confidence, category = extract_prediction_fields(result)
             print(f"✅ Text: {text[:50]}...")
-            print(f"   Prediction: {result.get('prediction', 'N/A')}")
-            print(f"   Confidence: {result.get('confidence', 0):.3f}")
-            print(f"   Category: {result.get('category', 'N/A')}")
+            print(f"   Prediction: {prediction}")
+            print(f"   Confidence: {confidence:.3f}")
+            print(f"   Category: {category}")
             print(f"   Response time: {elapsed:.1f}ms\n")
         else:
             print(f"❌ Error {response.status_code}: {response.text}\n")
@@ -129,8 +148,9 @@ print(f"   Average per text: {elapsed_batch/len(batch_texts):.1f}ms")
 print(f"   Throughput: {len(batch_texts)/(elapsed_batch/1000):.1f} texts/second\n")
 
 # Summary
-hate_count = sum(1 for r in results if r.get('prediction') == 'Hate Speech')
-normal_count = len(results) - hate_count
+parsed_predictions = [extract_prediction_fields(r)[0] for r in results]
+hate_count = sum(1 for p in parsed_predictions if p == 'Hate Speech')
+normal_count = len(parsed_predictions) - hate_count
 
 print(f"📊 Batch Results Summary:")
 print(f"   Total analyzed: {len(results)}")
@@ -138,8 +158,7 @@ print(f"   Hate speech detected: {hate_count}")
 print(f"   Normal speech: {normal_count}\n")
 
 for i, (text, result) in enumerate(zip(batch_texts, results), 1):
-    pred = result.get('prediction', 'N/A')
-    conf = result.get('confidence', 0)
+    pred, conf, _ = extract_prediction_fields(result)
     icon = "🚨" if pred == "Hate Speech" else "✅"
     print(f"   {icon} [{i}] {text[:40]:40} → {pred:15} ({conf:.3f})")
 

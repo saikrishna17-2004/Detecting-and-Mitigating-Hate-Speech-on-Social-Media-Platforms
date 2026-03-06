@@ -11,6 +11,7 @@ import {
   Typography,
   TextField,
   Box,
+  Button,
   Divider,
   Menu,
   MenuItem,
@@ -22,14 +23,29 @@ import {
   Send,
   MoreVert,
 } from '@mui/icons-material';
+import { translate } from '../../i18n/translations';
+import IndianLanguageKeyboard from '../keyboard/IndianLanguageKeyboard';
 
-function PostCard({ post, currentUser, onLike, onUnlike, onComment, onDelete }) {
+function PostCard({
+  post,
+  currentUser,
+  onLike,
+  onUnlike,
+  onComment,
+  onDelete,
+  onFollowToggle,
+  followLoading = false,
+  onLanguageChange,
+  uiLanguage = 'english'
+}) {
   const [commentText, setCommentText] = useState('');
   const [showComments, setShowComments] = useState(false);
   const [menuAnchor, setMenuAnchor] = useState(null);
+  const [commentSuccess, setCommentSuccess] = useState('');
   const navigate = useNavigate();
 
   const isOwner = !!(currentUser && currentUser.id === post.user_id);
+  const canFollow = !!(!isOwner && currentUser && onFollowToggle);
 
   const handleLikeToggle = () => {
     if (post.isLiked) {
@@ -44,6 +60,9 @@ function PostCard({ post, currentUser, onLike, onUnlike, onComment, onDelete }) 
     if (commentText.trim()) {
       await onComment(post.id, commentText);
       setCommentText('');
+      setShowComments(true);
+      setCommentSuccess(translate(uiLanguage, 'commentAdded'));
+      setTimeout(() => setCommentSuccess(''), 2000);
     }
   };
 
@@ -59,6 +78,13 @@ function PostCard({ post, currentUser, onLike, onUnlike, onComment, onDelete }) 
     setMenuAnchor(null);
   };
 
+  const handleFollowClick = () => {
+    if (!canFollow) {
+      return;
+    }
+    onFollowToggle(post.user_id, !!post.is_following);
+  };
+
   return (
     <Card sx={{ mb: 2, maxWidth: 614 }}>
       <CardHeader
@@ -71,9 +97,21 @@ function PostCard({ post, currentUser, onLike, onUnlike, onComment, onDelete }) 
           </Avatar>
         }
         action={
-          <IconButton aria-label="more" onClick={handleMenuOpen}>
-            <MoreVert />
-          </IconButton>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            {canFollow && (
+              <Button
+                size="small"
+                variant={post.is_following ? 'outlined' : 'contained'}
+                onClick={handleFollowClick}
+                disabled={followLoading}
+              >
+                {translate(uiLanguage, post.is_following ? 'unfollow' : 'follow')}
+              </Button>
+            )}
+            <IconButton aria-label="more" onClick={handleMenuOpen}>
+              <MoreVert />
+            </IconButton>
+          </Box>
         }
         title={
           <Typography 
@@ -102,20 +140,20 @@ function PostCard({ post, currentUser, onLike, onUnlike, onComment, onDelete }) 
             handleProfileClick();
           }}
         >
-          View profile
+          {translate(uiLanguage, 'viewProfile')}
         </MenuItem>
 
         {isOwner && onDelete && (
           <MenuItem
             onClick={async () => {
               handleMenuClose();
-              const ok = window.confirm('Delete this post?');
+              const ok = window.confirm(translate(uiLanguage, 'deletePostConfirm'));
               if (ok) {
                 await onDelete(post.id);
               }
             }}
           >
-            Delete post
+            {translate(uiLanguage, 'deletePost')}
           </MenuItem>
         )}
       </Menu>
@@ -125,7 +163,7 @@ function PostCard({ post, currentUser, onLike, onUnlike, onComment, onDelete }) 
           component="img"
           height="400"
           image={post.image_url}
-          alt={post.content || 'Post image'}
+          alt={post.content || translate(uiLanguage, 'postImage')}
           sx={{ objectFit: 'cover' }}
         />
       )}
@@ -141,7 +179,7 @@ function PostCard({ post, currentUser, onLike, onUnlike, onComment, onDelete }) 
 
       <CardContent sx={{ pt: 0 }}>
         <Typography variant="body2" fontWeight="bold">
-          {post.likes_count || 0} likes
+          {post.likes_count || 0} {translate(uiLanguage, 'likes')}
         </Typography>
 
         {post.content && (
@@ -158,7 +196,7 @@ function PostCard({ post, currentUser, onLike, onUnlike, onComment, onDelete }) 
               sx={{ mt: 1, cursor: 'pointer' }}
               onClick={() => setShowComments(!showComments)}
             >
-              View all {post.comments.length} comments
+              {translate(uiLanguage, 'viewAll')} {post.comments.length} {translate(uiLanguage, 'comments')}
             </Typography>
 
             {showComments && (
@@ -179,7 +217,7 @@ function PostCard({ post, currentUser, onLike, onUnlike, onComment, onDelete }) 
           <TextField
             fullWidth
             size="small"
-            placeholder="Add a comment..."
+            placeholder={translate(uiLanguage, 'addComment')}
             variant="standard"
             value={commentText}
             onChange={(e) => setCommentText(e.target.value)}
@@ -191,6 +229,17 @@ function PostCard({ post, currentUser, onLike, onUnlike, onComment, onDelete }) 
             <Send />
           </IconButton>
         </Box>
+        <IndianLanguageKeyboard
+          value={commentText}
+          onChange={setCommentText}
+          selectedLanguage={uiLanguage}
+          onLanguageChange={onLanguageChange}
+        />
+        {commentSuccess && (
+          <Typography variant="caption" color="success.main" sx={{ display: 'block', mt: 0.5 }}>
+            {commentSuccess}
+          </Typography>
+        )}
       </CardContent>
     </Card>
   );

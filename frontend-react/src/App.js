@@ -12,7 +12,7 @@ import CreatePost from './components/posts/CreatePost';
 import AdminDashboard from './components/admin/AdminDashboard';
 import ModerationAlert from './components/moderation/ModerationAlert';
 
-function RegisterRoute({ user, onRegister }) {
+function RegisterRoute({ user, onRegister, uiLanguage }) {
   const location = useLocation();
   const canAccessRegister = location.state?.fromLogin === true;
 
@@ -24,12 +24,13 @@ function RegisterRoute({ user, onRegister }) {
     return <Navigate to="/login" replace />;
   }
 
-  return <Register onRegister={onRegister} />;
+  return <Register onRegister={onRegister} uiLanguage={uiLanguage} />;
 }
 
 function App() {
   const [user, setUser] = useState(null);
   const [moderationAlert, setModerationAlert] = useState(null);
+  const [uiLanguage, setUiLanguage] = useState('english');
 
   const handleLogin = (userData) => {
     setUser(userData);
@@ -49,39 +50,40 @@ function App() {
 
   return (
     <Box sx={{ minHeight: '100vh', backgroundColor: '#fafafa' }}>
-      {user && <Navbar user={user} onLogout={handleLogout} />}
+      {user && <Navbar user={user} onLogout={handleLogout} uiLanguage={uiLanguage} />}
       
       {moderationAlert && (
         <ModerationAlert 
           alert={moderationAlert} 
           onClose={closeModerationAlert} 
+          uiLanguage={uiLanguage}
         />
       )}
 
       <Routes>
         <Route 
           path="/login" 
-          element={user ? <Navigate to="/" /> : <Login onLogin={handleLogin} />} 
+          element={user ? <Navigate to="/" /> : <Login onLogin={handleLogin} uiLanguage={uiLanguage} />} 
         />
         <Route 
           path="/register" 
-          element={<RegisterRoute user={user} onRegister={handleLogin} />} 
+          element={<RegisterRoute user={user} onRegister={handleLogin} uiLanguage={uiLanguage} />} 
         />
         <Route 
           path="/" 
-          element={user ? <Feed user={user} onModerationAlert={showModerationAlert} /> : <Navigate to="/login" />} 
+          element={user ? <Feed user={user} onModerationAlert={showModerationAlert} uiLanguage={uiLanguage} onLanguageChange={setUiLanguage} /> : <Navigate to="/login" />} 
         />
         <Route 
           path="/create" 
-          element={user ? <CreatePost user={user} onModerationAlert={showModerationAlert} /> : <Navigate to="/login" />} 
+          element={user ? <CreatePost user={user} onModerationAlert={showModerationAlert} uiLanguage={uiLanguage} onLanguageChange={setUiLanguage} /> : <Navigate to="/login" />} 
         />
         <Route 
           path="/profile/:userId" 
-          element={user ? <Profile user={user} /> : <Navigate to="/login" />} 
+          element={user ? <Profile user={user} uiLanguage={uiLanguage} /> : <Navigate to="/login" />} 
         />
         <Route 
           path="/admin" 
-          element={user && user.isAdmin ? <AdminDashboard user={user} /> : <Navigate to="/" />} 
+          element={user && user.isAdmin ? <AdminDashboard user={user} uiLanguage={uiLanguage} /> : <Navigate to="/" />} 
         />
       </Routes>
     </Box>

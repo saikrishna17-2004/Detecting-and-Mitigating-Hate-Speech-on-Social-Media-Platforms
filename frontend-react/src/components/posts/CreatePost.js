@@ -11,10 +11,11 @@ import {
   Alert,
 } from '@mui/material';
 import { PhotoCamera, Close } from '@mui/icons-material';
-import { postAPI, analysisAPI } from '../../services/api';
+import { postAPI, analysisAPI, withApiFeedback } from '../../services/api';
 import IndianLanguageKeyboard from '../keyboard/IndianLanguageKeyboard';
+import { translate } from '../../i18n/translations';
 
-function CreatePost({ user, onModerationAlert }) {
+function CreatePost({ user, onModerationAlert, uiLanguage = 'english', onLanguageChange }) {
   const [caption, setCaption] = useState('');
   const [imagePreview, setImagePreview] = useState(null);
   const [imageFile, setImageFile] = useState(null);
@@ -46,7 +47,7 @@ function CreatePost({ user, onModerationAlert }) {
 
     try {
       if (!user || user.id === undefined || user.id === null) {
-        setError('Session expired. Please log in again.');
+        setError(translate(uiLanguage, 'sessionExpired'));
         setLoading(false);
         return;
       }
@@ -63,6 +64,8 @@ function CreatePost({ user, onModerationAlert }) {
           onModerationAlert({
             type: analysisResponse.data.action_taken,
             message: analysisResponse.data.message,
+            messageKey: analysisResponse.data.message_key,
+            messageParams: analysisResponse.data.message_params,
             category: analysisResponse.data.result.category,
           });
 
@@ -81,10 +84,20 @@ function CreatePost({ user, onModerationAlert }) {
         image_url: imagePreview || null, // Use base64 preview as image URL
       };
 
-      await postAPI.createPost(postData);
+      const createResult = await withApiFeedback({
+        request: () => postAPI.createPost(postData),
+        uiLanguage,
+        errorFallback: translate(uiLanguage, 'failedCreatePost'),
+        setError,
+      });
+
+      if (!createResult.ok) {
+        return;
+      }
+
       navigate('/');
     } catch (err) {
-      setError(err.response?.data?.error || 'Failed to create post');
+      setError(err?.message || translate(uiLanguage, 'failedCreatePost'));
     } finally {
       setLoading(false);
     }
@@ -94,7 +107,7 @@ function CreatePost({ user, onModerationAlert }) {
     <Container maxWidth="sm">
       <Paper sx={{ mt: 4, p: 3 }}>
         <Typography variant="h5" gutterBottom>
-          Create New Post
+          {translate(uiLanguage, 'createNewPost')}
         </Typography>
 
         {error && (
@@ -140,7 +153,7 @@ function CreatePost({ user, onModerationAlert }) {
               startIcon={<PhotoCamera />}
               sx={{ mb: 2, py: 2 }}
             >
-              Upload Photo
+              {translate(uiLanguage, 'uploadPhoto')}
               <input
                 type="file"
                 hidden
@@ -154,7 +167,7 @@ function CreatePost({ user, onModerationAlert }) {
             fullWidth
             multiline
             rows={4}
-            placeholder="Write a caption..."
+            placeholder={translate(uiLanguage, 'writeCaption')}
             value={caption}
             onChange={(e) => setCaption(e.target.value)}
             sx={{ mb: 0 }}
@@ -163,6 +176,8 @@ function CreatePost({ user, onModerationAlert }) {
           <IndianLanguageKeyboard
             value={caption}
             onChange={setCaption}
+            selectedLanguage={uiLanguage}
+            onLanguageChange={onLanguageChange}
           />
 
           <Box sx={{ display: 'flex', gap: 2, mt: 2 }}>
@@ -171,7 +186,7 @@ function CreatePost({ user, onModerationAlert }) {
               fullWidth
               onClick={() => navigate('/')}
             >
-              Cancel
+              {translate(uiLanguage, 'cancel')}
             </Button>
             <Button
               type="submit"
@@ -179,7 +194,7 @@ function CreatePost({ user, onModerationAlert }) {
               fullWidth
               disabled={loading || (!caption.trim() && !imageFile)}
             >
-              {loading ? 'Sharing...' : 'Share'}
+              {loading ? translate(uiLanguage, 'sharing') : translate(uiLanguage, 'share')}
             </Button>
           </Box>
         </Box>

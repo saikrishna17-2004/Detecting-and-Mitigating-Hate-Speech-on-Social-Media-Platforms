@@ -11,6 +11,7 @@ project_root = Path(__file__).parent
 sys.path.insert(0, str(project_root))
 
 from backend.app import create_app
+from waitress import serve
 
 # Create Flask app
 app = create_app()
@@ -31,4 +32,4 @@ if __name__ == '__main__':
     print("   - GET  /api/violations")
     print("="*70 + "\n")
     
-    app.run(host='0.0.0.0', port=port, debug=False)
+    serve(app, host='0.0.0.0', port=port, threads=4, _quiet=False)

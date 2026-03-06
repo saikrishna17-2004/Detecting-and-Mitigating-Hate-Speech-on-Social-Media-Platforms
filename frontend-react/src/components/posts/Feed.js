@@ -1,29 +1,31 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Container, Box, CircularProgress, Typography } from '@mui/material';
-import { postAPI } from '../../services/api';
+import { postAPI, userAPI } from '../../services/api';
 import PostCard from './PostCard';
+import { translate } from '../../i18n/translations';
 
-function Feed({ user, onModerationAlert }) {
+function Feed({ user, onModerationAlert, uiLanguage = 'english', onLanguageChange }) {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [followLoadingByUser, setFollowLoadingByUser] = useState({});
 
-  useEffect(() => {
-    fetchPosts();
-  }, []);
-
-  const fetchPosts = async () => {
+  const fetchPosts = useCallback(async () => {
     try {
       setError('');
-      const response = await postAPI.getFeed();
+      const response = await postAPI.getFeed(1, user?.id);
       setPosts(response.data.posts || []);
     } catch (err) {
-      setError('Failed to load posts');
+      setError(translate(uiLanguage, 'failedLoadPosts'));
       console.error(err);
     } finally {
       setLoading(false);
     }
-  };
+  }, [uiLanguage, user]);
+
+  useEffect(() => {
+    fetchPosts();
+  }, [fetchPosts]);
 
   const handleLike = async (postId) => {
     try {
@@ -54,7 +56,7 @@ function Feed({ user, onModerationAlert }) {
 
   const handleComment = async (postId, commentText) => {
     try {
-      const response = await postAPI.addComment(postId, commentText);
+      const response = await postAPI.addComment(postId, commentText, user?.id, user?.username);
       
       // Check for hate speech detection
       if (response.data.moderation_alert) {
@@ -62,11 +64,14 @@ function Feed({ user, onModerationAlert }) {
       }
 
       // Update post with new comment
-      setPosts(posts.map(post => 
-        post.id === postId 
-          ? { ...post, comments: [...post.comments, response.data.comment] }
-          : post
-      ));
+      setPosts((prevPosts) => prevPosts.map((post) => {
+        if (post.id !== postId) {
+          return post;
+        }
+
+        const existingComments = Array.isArray(post.comments) ? post.comments : [];
+        return { ...post, comments: [...existingComments, response.data.comment] };
+      }));
     } catch (err) {
       console.error('Failed to add comment:', err);
     }
@@ -83,6 +88,31 @@ function Feed({ user, onModerationAlert }) {
       setPosts(posts.filter(p => p.id !== postId));
     } catch (err) {
       console.error('Failed to delete post:', err);
+    }
+  };
+
+  const handleFollowToggle = async (targetUserId, currentlyFollowing) => {
+    if (!user || !targetUserId || targetUserId === user.id) {
+      return;
+    }
+
+    try {
+      setFollowLoadingByUser((prev) => ({ ...prev, [targetUserId]: true }));
+      if (currentlyFollowing) {
+        await userAPI.unfollowUser(targetUserId, user.id);
+      } else {
+        await userAPI.followUser(targetUserId, user.id);
+      }
+
+      setPosts((prevPosts) => prevPosts.map((post) => (
+        post.user_id === targetUserId
+          ? { ...post, is_following: !currentlyFollowing }
+          : post
+      )));
+    } catch (err) {
+      console.error('Failed to update follow status:', err);
+    } finally {
+      setFollowLoadingByUser((prev) => ({ ...prev, [targetUserId]: false }));
     }
   };
 
@@ -108,7 +138,7 @@ function Feed({ user, onModerationAlert }) {
     <Container maxWidth="sm" sx={{ mt: 2, mb: 4 }}>
       {posts.length === 0 ? (
         <Typography align="center" color="text.secondary" sx={{ mt: 4 }}>
-          No posts yet. Start sharing your moments!
+          {translate(uiLanguage, 'noPostsFeed')}
         </Typography>
       ) : (
         posts.map(post => (
@@ -116,10 +146,14 @@ function Feed({ user, onModerationAlert }) {
             key={post.id}
             post={post}
             currentUser={user}
+            uiLanguage={uiLanguage}
             onLike={handleLike}
             onUnlike={handleUnlike}
             onComment={handleComment}
             onDelete={handleDelete}
+            onFollowToggle={handleFollowToggle}
+            followLoading={!!followLoadingByUser[post.user_id]}
+            onLanguageChange={onLanguageChange}
           />
         ))
       )}

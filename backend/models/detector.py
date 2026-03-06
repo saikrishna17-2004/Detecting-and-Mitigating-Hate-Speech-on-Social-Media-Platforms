@@ -2,9 +2,11 @@ try:
     import joblib
 except Exception:
     joblib = None
+import json
 import os
 import re
 from backend.utils.preprocessing import TextPreprocessor, categorize_hate_speech
+from backend.config import MODEL_THRESHOLD
 
 # Multi-language support
 try:
@@ -79,6 +81,7 @@ class HateSpeechDetector:
         self.model = None
         self.vectorizer = None
         self.model_loaded = False
+        self.model_threshold = MODEL_THRESHOLD
         self.offensive_keywords = set()
         self.offensive_phrases = set()
         self.high_precision_english_keywords = {
@@ -334,13 +337,22 @@ class HateSpeechDetector:
         """Load pre-trained model if available"""
         model_path = 'ml_model/hate_speech_model.pkl'
         vectorizer_path = 'ml_model/vectorizer.pkl'
+        metadata_path = 'ml_model/model_metadata.json'
         
         try:
             if joblib and os.path.exists(model_path) and os.path.exists(vectorizer_path):
                 self.model = joblib.load(model_path)
                 self.vectorizer = joblib.load(vectorizer_path)
+
+                if os.path.exists(metadata_path):
+                    with open(metadata_path, 'r', encoding='utf-8') as meta_file:
+                        metadata = json.load(meta_file)
+                    threshold = metadata.get('decision_threshold', self.model_threshold)
+                    self.model_threshold = float(threshold)
+
                 self.model_loaded = True
                 print("ML Model loaded successfully!")
+                print(f"Model threshold: {self.model_threshold:.2f}")
             else:
                 print("ML Model not found or joblib missing. Using rule-based detection.")
         except Exception as e:
@@ -356,11 +368,11 @@ class HateSpeechDetector:
             text_vectorized = self.vectorizer.transform([processed_text])
             
             # Predict
-            prediction = self.model.predict(text_vectorized)[0]
             probability = self.model.predict_proba(text_vectorized)[0]
             
             # Get confidence score (probability of hate speech class)
             confidence = probability[1] if len(probability) > 1 else probability[0]
+            prediction = int(confidence >= self.model_threshold)
             
             return bool(prediction), float(confidence)
         except Exception as e:
@@ -595,27 +607,18 @@ class HateSpeechDetector:
             except Exception as _:
                 ml_is_hate, ml_conf = (False, 0.0)
 
-        # Improved combination logic:
-        # If rule-based says NOT hate (including safe context detection), trust it
-        # This prevents ML false positives on context-safe phrases
-        if not rule_is_hate and rule_conf == 0.0:
-            # Rule-based explicitly cleared this (safe context)
-            is_hate = False
-            confidence = 0.0
-        elif rule_is_hate and ml_is_hate:
-            # Both agree it's hate - high confidence
+        # Combination logic tuned for better recall while preserving precision.
+        if rule_is_hate and ml_is_hate:
             is_hate = True
             confidence = max(rule_conf, ml_conf)
         elif rule_is_hate:
-            # Rule-based says hate, ML says not - trust rule-based if high confidence
             is_hate = rule_conf >= 0.7
-            confidence = rule_conf
+            confidence = rule_conf if is_hate else 0.0
         elif ml_is_hate:
-            # ML says hate, rule-based says not - lower confidence, likely false positive
-            is_hate = ml_conf >= 0.75  # Higher threshold for ML-only detection
-            confidence = ml_conf * 0.8  # Reduce confidence
+            # Use tuned model threshold from training metadata.
+            is_hate = ml_conf >= self.model_threshold
+            confidence = ml_conf if is_hate else 0.0
         else:
-            # Both say not hate
             is_hate = False
             confidence = 0.0
         

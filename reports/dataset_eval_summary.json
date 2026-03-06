@@ -1,0 +1,24 @@
+{
+  "source": "data\\Dataset.csv",
+  "rows_seen": 5001,
+  "rows_processed": 5000,
+  "rows_with_labels": 5000,
+  "text_column_used": "Translated Post Description",
+  "label_column_used": "Hate",
+  "predicted_hate": 288,
+  "predicted_non_hate": 4712,
+  "confusion_matrix": {
+    "tp": 17,
+    "fp": 271,
+    "tn": 4481,
+    "fn": 231
+  },
+  "metrics": {
+    "accuracy": 0.8996,
+    "precision": 0.059,
+    "recall": 0.0685,
+    "f1": 0.0634
+  },
+  "predictions_file": "reports\\dataset_predictions.csv",
+  "generated_summary_file": "reports\\dataset_eval_summary.json"
+}

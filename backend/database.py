@@ -56,6 +56,8 @@ def _get_next_sequence(name):
 def _user_to_dict(user_doc, violations_count=None):
     if not user_doc:
         return None
+    follower_ids = user_doc.get('follower_ids', []) or []
+    following_ids = user_doc.get('following_ids', []) or []
     return {
         'id': user_doc['id'],
         'username': user_doc['username'],
@@ -64,7 +66,9 @@ def _user_to_dict(user_doc, violations_count=None):
         'is_suspended': user_doc.get('is_suspended', False),
         'suspended_at': user_doc.get('suspended_at').isoformat() if user_doc.get('suspended_at') else None,
         'created_at': user_doc.get('created_at').isoformat() if user_doc.get('created_at') else None,
-        'violations_count': violations_count if violations_count is not None else 0
+        'violations_count': violations_count if violations_count is not None else 0,
+        'followers_count': len(follower_ids),
+        'following_count': len(following_ids)
     }
 
 
@@ -88,6 +92,7 @@ def _violation_to_dict(violation_doc, username=None):
 def _post_to_dict(post_doc, username=None):
     if not post_doc:
         return None
+    comments = post_doc.get('comments', []) or []
     return {
         'id': post_doc['id'],
         'user_id': post_doc['user_id'],
@@ -97,6 +102,7 @@ def _post_to_dict(post_doc, username=None):
         'is_hate_speech': post_doc.get('is_hate_speech', False),
         'confidence_score': round(float(post_doc.get('confidence_score', 0.0)), 3),
         'likes_count': post_doc.get('likes_count', 0),
+        'comments': comments,
         'created_at': post_doc.get('created_at').isoformat() if post_doc.get('created_at') else None
     }
 
@@ -111,6 +117,8 @@ def create_user(username, email, password):
         'warning_count': 0,
         'is_suspended': False,
         'suspended_at': None,
+        'follower_ids': [],
+        'following_ids': [],
         'created_at': datetime.utcnow()
     }
     db.users.insert_one(user_doc)
@@ -127,10 +135,54 @@ def create_user_with_id(user_id, username, email, password=None):
         'warning_count': 0,
         'is_suspended': False,
         'suspended_at': None,
+        'follower_ids': [],
+        'following_ids': [],
         'created_at': datetime.utcnow()
     }
     db.users.insert_one(user_doc)
     return user_doc
+
+
+def follow_user(follower_id, target_user_id):
+    _, db = _get_db()
+    follower_id = int(follower_id)
+    target_user_id = int(target_user_id)
+
+    db.users.update_one(
+        {'id': follower_id},
+        {'$addToSet': {'following_ids': target_user_id}}
+    )
+    db.users.update_one(
+        {'id': target_user_id},
+        {'$addToSet': {'follower_ids': follower_id}}
+    )
+
+    return get_user_by_id(follower_id), get_user_by_id(target_user_id)
+
+
+def unfollow_user(follower_id, target_user_id):
+    _, db = _get_db()
+    follower_id = int(follower_id)
+    target_user_id = int(target_user_id)
+
+    db.users.update_one(
+        {'id': follower_id},
+        {'$pull': {'following_ids': target_user_id}}
+    )
+    db.users.update_one(
+        {'id': target_user_id},
+        {'$pull': {'follower_ids': follower_id}}
+    )
+
+    return get_user_by_id(follower_id), get_user_by_id(target_user_id)
+
+
+def is_following(follower_id, target_user_id):
+    follower = get_user_by_id(follower_id)
+    if not follower:
+        return False
+    target_user_id = int(target_user_id)
+    return target_user_id in (follower.get('following_ids', []) or [])
 
 
 def update_user(user_id, updates):
@@ -237,6 +289,7 @@ def create_post(data):
         'is_hate_speech': bool(data.get('is_hate_speech', False)),
         'confidence_score': float(data.get('confidence_score', 0.0)),
         'likes_count': int(data.get('likes_count', 0)),
+        'comments': data.get('comments', []),
         'created_at': data.get('created_at', datetime.utcnow())
     }
     db.posts.insert_one(post_doc)
@@ -256,6 +309,15 @@ def delete_post_by_id(post_id):
 def update_post(post_id, updates):
     _, db = _get_db()
     db.posts.update_one({'id': int(post_id)}, {'$set': updates})
+    return get_post_by_id(post_id)
+
+
+def add_comment_to_post(post_id, comment_doc):
+    _, db = _get_db()
+    db.posts.update_one(
+        {'id': int(post_id)},
+        {'$push': {'comments': comment_doc}}
+    )
     return get_post_by_id(post_id)
 
 

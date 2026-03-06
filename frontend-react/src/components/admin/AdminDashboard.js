@@ -20,9 +20,14 @@ import {
   TextField,
   Alert,
 } from '@mui/material';
-import { adminAPI } from '../../services/api';
+import { adminAPI, withApiFeedback } from '../../services/api';
+import {
+  translate,
+  translateModerationAction,
+  translateModerationCategory,
+} from '../../i18n/translations';
 
-function AdminDashboard() {
+function AdminDashboard({ uiLanguage = 'english' }) {
   const [tabValue, setTabValue] = useState(0);
   const [stats, setStats] = useState(null);
   const [users, setUsers] = useState([]);
@@ -31,6 +36,9 @@ function AdminDashboard() {
   const [lexiconLoading, setLexiconLoading] = useState(false);
   const [lexiconText, setLexiconText] = useState('');
   const [lexiconMessage, setLexiconMessage] = useState('');
+  const [lexiconMessageSeverity, setLexiconMessageSeverity] = useState('success');
+  const [adminActionMessage, setAdminActionMessage] = useState('');
+  const [adminActionSeverity, setAdminActionSeverity] = useState('success');
 
   useEffect(() => {
     fetchStatistics();
@@ -65,18 +73,49 @@ function AdminDashboard() {
     }
   };
 
-  const handleReloadLexicon = async () => {
-    try {
-      setLexiconLoading(true);
-      const response = await adminAPI.reloadLexicon();
-      setLexiconInfo(response.data);
-      setLexiconMessage('Lexicon reloaded successfully');
-    } catch (err) {
-      console.error('Failed to reload lexicon:', err);
-      setLexiconMessage('Failed to reload lexicon');
-    } finally {
-      setLexiconLoading(false);
+  const setLexiconErrorMessage = (message) => {
+    if (!message) {
+      setLexiconMessage('');
+      return;
     }
+    setLexiconMessage(message);
+    setLexiconMessageSeverity('error');
+  };
+
+  const setLexiconSuccessMessage = (message) => {
+    setLexiconMessage(message);
+    setLexiconMessageSeverity('success');
+  };
+
+  const setAdminErrorMessage = (message) => {
+    if (!message) {
+      return;
+    }
+    setAdminActionMessage(message);
+    setAdminActionSeverity('error');
+  };
+
+  const setAdminSuccessMessage = (message) => {
+    setAdminActionMessage(message);
+    setAdminActionSeverity('success');
+  };
+
+  const handleReloadLexicon = async () => {
+    setLexiconLoading(true);
+    const result = await withApiFeedback({
+      request: () => adminAPI.reloadLexicon(),
+      uiLanguage,
+      errorFallback: translate(uiLanguage, 'lexiconReloadFailed'),
+      successFallback: translate(uiLanguage, 'lexiconReloaded'),
+      setError: setLexiconErrorMessage,
+      setSuccess: setLexiconSuccessMessage,
+    });
+
+    if (result.ok) {
+      setLexiconInfo(result.response.data);
+    }
+
+    setLexiconLoading(false);
   };
 
   const handleGetLexiconStats = async () => {
@@ -89,55 +128,80 @@ function AdminDashboard() {
   };
 
   const handleUpdateLexicon = async (mode) => {
-    try {
-      setLexiconLoading(true);
-      const response = await adminAPI.updateLexicon(lexiconText, mode);
-      setLexiconInfo(response.data);
-      setLexiconMessage(mode === 'append' ? 'Words appended and reloaded' : 'Lexicon replaced and reloaded');
+    setLexiconLoading(true);
+    const result = await withApiFeedback({
+      request: () => adminAPI.updateLexicon(lexiconText, mode),
+      uiLanguage,
+      errorFallback: translate(uiLanguage, 'lexiconUpdateFailed'),
+      successFallback: mode === 'append' ? translate(uiLanguage, 'lexiconAppended') : translate(uiLanguage, 'lexiconReplaced'),
+      setError: setLexiconErrorMessage,
+      setSuccess: setLexiconSuccessMessage,
+    });
+
+    if (result.ok) {
+      setLexiconInfo(result.response.data);
       setLexiconText('');
-    } catch (err) {
-      console.error('Failed to update lexicon:', err);
-      setLexiconMessage('Failed to update lexicon');
-    } finally {
-      setLexiconLoading(false);
     }
+
+    setLexiconLoading(false);
   };
 
   const handleWarnUser = async (userId) => {
-    try {
-      await adminAPI.warnUser(userId);
+    const result = await withApiFeedback({
+      request: () => adminAPI.warnUser(userId),
+      uiLanguage,
+      errorFallback: translate(uiLanguage, 'adminActionFailed'),
+      setError: setAdminErrorMessage,
+      setSuccess: setAdminSuccessMessage,
+    });
+
+    if (result.ok) {
       fetchUsers();
       fetchStatistics();
-    } catch (err) {
-      console.error('Failed to warn user:', err);
     }
   };
 
   const handleSuspendUser = async (userId) => {
-    try {
-      await adminAPI.suspendUser(userId);
+    const result = await withApiFeedback({
+      request: () => adminAPI.suspendUser(userId),
+      uiLanguage,
+      errorFallback: translate(uiLanguage, 'adminActionFailed'),
+      setError: setAdminErrorMessage,
+      setSuccess: setAdminSuccessMessage,
+    });
+
+    if (result.ok) {
       fetchUsers();
       fetchStatistics();
-    } catch (err) {
-      console.error('Failed to suspend user:', err);
     }
   };
 
   const handleUnsuspendUser = async (userId) => {
-    try {
-      await adminAPI.unsuspendUser(userId);
+    const result = await withApiFeedback({
+      request: () => adminAPI.unsuspendUser(userId),
+      uiLanguage,
+      errorFallback: translate(uiLanguage, 'adminActionFailed'),
+      setError: setAdminErrorMessage,
+      setSuccess: setAdminSuccessMessage,
+    });
+
+    if (result.ok) {
       fetchUsers();
       fetchStatistics();
-    } catch (err) {
-      console.error('Failed to unsuspend user:', err);
     }
   };
 
   return (
     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
       <Typography variant="h4" gutterBottom>
-        Admin Dashboard
+        {translate(uiLanguage, 'adminDashboard')}
       </Typography>
+
+      {adminActionMessage && (
+        <Alert severity={adminActionSeverity} sx={{ mb: 2 }}>
+          {adminActionMessage}
+        </Alert>
+      )}
 
       {/* Statistics Cards */}
       {stats && (
@@ -146,7 +210,7 @@ function AdminDashboard() {
             <Card>
               <CardContent>
                 <Typography color="text.secondary" gutterBottom>
-                  Total Users
+                  {translate(uiLanguage, 'totalUsers')}
                 </Typography>
                 <Typography variant="h4">{stats.total_users}</Typography>
               </CardContent>
@@ -156,7 +220,7 @@ function AdminDashboard() {
             <Card>
               <CardContent>
                 <Typography color="text.secondary" gutterBottom>
-                  Suspended Users
+                  {translate(uiLanguage, 'suspendedUsers')}
                 </Typography>
                 <Typography variant="h4" color="error">
                   {stats.suspended_users}
@@ -168,7 +232,7 @@ function AdminDashboard() {
             <Card>
               <CardContent>
                 <Typography color="text.secondary" gutterBottom>
-                  Total Violations
+                  {translate(uiLanguage, 'totalViolations')}
                 </Typography>
                 <Typography variant="h4">{stats.total_violations}</Typography>
               </CardContent>
@@ -178,7 +242,7 @@ function AdminDashboard() {
             <Card>
               <CardContent>
                 <Typography color="text.secondary" gutterBottom>
-                  Hate Speech %
+                  {translate(uiLanguage, 'hateSpeechPercent')}
                 </Typography>
                 <Typography variant="h4" color="warning.main">
                   {stats.hate_speech_percentage}%
@@ -192,30 +256,30 @@ function AdminDashboard() {
       {/* Lexicon Controls */}
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
         <Button variant="contained" onClick={handleReloadLexicon} disabled={lexiconLoading}>
-          {lexiconLoading ? 'Reloading lexicon...' : 'Reload Lexicon'}
+          {lexiconLoading ? translate(uiLanguage, 'reloadingLexicon') : translate(uiLanguage, 'reloadLexicon')}
         </Button>
         {lexiconInfo && lexiconInfo.success && (
           <Typography variant="body2" color="text.secondary">
-            Loaded {lexiconInfo.words_count} words and {lexiconInfo.phrases_count} phrases from {lexiconInfo.path}
+            {translate(uiLanguage, 'loadedLexiconInfo')} {lexiconInfo.words_count} {translate(uiLanguage, 'words')} {translate(uiLanguage, 'and')} {lexiconInfo.phrases_count} {translate(uiLanguage, 'phrases')} {translate(uiLanguage, 'from')} {lexiconInfo.path}
           </Typography>
         )}
         <Button variant="outlined" onClick={handleGetLexiconStats}>
-          Get Lexicon Stats
+          {translate(uiLanguage, 'getLexiconStats')}
         </Button>
       </Box>
 
       {/* Lexicon Management */}
       <Paper sx={{ p: 2, mb: 3 }}>
         <Typography variant="h6" gutterBottom>
-          Lexicon Management
+          {translate(uiLanguage, 'lexiconManagement')}
         </Typography>
         <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-          Paste words or phrases below (one per line), then choose Append or Replace.
+          {translate(uiLanguage, 'lexiconManagementHelp')}
         </Typography>
         <TextField
           value={lexiconText}
           onChange={(e) => setLexiconText(e.target.value)}
-          placeholder={"e.g.\nfoo\nbar baz\n..."}
+          placeholder={translate(uiLanguage, 'lexiconPlaceholder')}
           fullWidth
           multiline
           minRows={4}
@@ -223,14 +287,14 @@ function AdminDashboard() {
         />
         <Box sx={{ display: 'flex', gap: 1 }}>
           <Button variant="outlined" disabled={!lexiconText.trim() || lexiconLoading} onClick={() => handleUpdateLexicon('append')}>
-            Append
+            {translate(uiLanguage, 'append')}
           </Button>
           <Button variant="contained" color="warning" disabled={!lexiconText.trim() || lexiconLoading} onClick={() => handleUpdateLexicon('replace')}>
-            Replace
+            {translate(uiLanguage, 'replace')}
           </Button>
         </Box>
         {lexiconMessage && (
-          <Alert severity={lexiconMessage.startsWith('Failed') ? 'error' : 'success'} sx={{ mt: 2 }}>
+          <Alert severity={lexiconMessageSeverity} sx={{ mt: 2 }}>
             {lexiconMessage}
           </Alert>
         )}
@@ -238,8 +302,8 @@ function AdminDashboard() {
 
       <Paper>
         <Tabs value={tabValue} onChange={(e, v) => setTabValue(v)}>
-          <Tab label="Users" />
-          <Tab label="Violations" />
+          <Tab label={translate(uiLanguage, 'users')} />
+          <Tab label={translate(uiLanguage, 'violations')} />
         </Tabs>
 
         <Box sx={{ p: 3 }}>
@@ -249,11 +313,11 @@ function AdminDashboard() {
               <Table>
                 <TableHead>
                   <TableRow>
-                    <TableCell>Username</TableCell>
-                    <TableCell>Email</TableCell>
-                    <TableCell>Warnings</TableCell>
-                    <TableCell>Status</TableCell>
-                    <TableCell>Actions</TableCell>
+                    <TableCell>{translate(uiLanguage, 'username')}</TableCell>
+                    <TableCell>{translate(uiLanguage, 'email')}</TableCell>
+                    <TableCell>{translate(uiLanguage, 'warnings')}</TableCell>
+                    <TableCell>{translate(uiLanguage, 'status')}</TableCell>
+                    <TableCell>{translate(uiLanguage, 'actions')}</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -270,9 +334,9 @@ function AdminDashboard() {
                       </TableCell>
                       <TableCell>
                         {user.is_suspended ? (
-                          <Chip label="Suspended" color="error" size="small" />
+                          <Chip label={translate(uiLanguage, 'suspended')} color="error" size="small" />
                         ) : (
-                          <Chip label="Active" color="success" size="small" />
+                          <Chip label={translate(uiLanguage, 'active')} color="success" size="small" />
                         )}
                       </TableCell>
                       <TableCell>
@@ -285,7 +349,7 @@ function AdminDashboard() {
                                 color="warning"
                                 onClick={() => handleWarnUser(user.id)}
                               >
-                                Warn
+                                {translate(uiLanguage, 'warn')}
                               </Button>
                               <Button
                                 size="small"
@@ -293,7 +357,7 @@ function AdminDashboard() {
                                 color="error"
                                 onClick={() => handleSuspendUser(user.id)}
                               >
-                                Suspend
+                                {translate(uiLanguage, 'suspend')}
                               </Button>
                             </>
                           ) : (
@@ -303,7 +367,7 @@ function AdminDashboard() {
                               color="success"
                               onClick={() => handleUnsuspendUser(user.id)}
                             >
-                              Unsuspend
+                              {translate(uiLanguage, 'unsuspend')}
                             </Button>
                           )}
                         </Box>
@@ -321,12 +385,12 @@ function AdminDashboard() {
               <Table>
                 <TableHead>
                   <TableRow>
-                    <TableCell>User</TableCell>
-                    <TableCell>Content</TableCell>
-                    <TableCell>Category</TableCell>
-                    <TableCell>Confidence</TableCell>
-                    <TableCell>Action</TableCell>
-                    <TableCell>Date</TableCell>
+                    <TableCell>{translate(uiLanguage, 'user')}</TableCell>
+                    <TableCell>{translate(uiLanguage, 'content')}</TableCell>
+                    <TableCell>{translate(uiLanguage, 'category')}</TableCell>
+                    <TableCell>{translate(uiLanguage, 'confidence')}</TableCell>
+                    <TableCell>{translate(uiLanguage, 'action')}</TableCell>
+                    <TableCell>{translate(uiLanguage, 'date')}</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -339,12 +403,12 @@ function AdminDashboard() {
                         </Typography>
                       </TableCell>
                       <TableCell>
-                        <Chip label={violation.category} size="small" />
+                        <Chip label={translateModerationCategory(uiLanguage, violation.category)} size="small" />
                       </TableCell>
                       <TableCell>{(violation.confidence_score * 100).toFixed(0)}%</TableCell>
                       <TableCell>
                         <Chip
-                          label={violation.action_taken}
+                          label={translateModerationAction(uiLanguage, violation.action_taken)}
                           color={violation.action_taken === 'suspension' ? 'error' : 'warning'}
                           size="small"
                         />

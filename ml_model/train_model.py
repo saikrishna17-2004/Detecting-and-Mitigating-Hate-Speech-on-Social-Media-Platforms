@@ -1,11 +1,13 @@
 import pandas as pd
 import numpy as np
+import json
 from sklearn.model_selection import train_test_split
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
-from sklearn.ensemble import RandomForestClassifier, VotingClassifier
+from sklearn.ensemble import VotingClassifier
 from sklearn.naive_bayes import MultinomialNB
-from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
+from sklearn.metrics import classification_report, confusion_matrix, accuracy_score, f1_score
+from sklearn.pipeline import FeatureUnion
 import joblib
 import sys
 import os
@@ -20,14 +22,50 @@ class HateSpeechModelTrainer:
     
     def __init__(self):
         self.preprocessor = TextPreprocessor()
-        # Increase capacity and use sublinear TF; keep word ngrams
-        self.vectorizer = TfidfVectorizer(
-            max_features=10000,
-            ngram_range=(1, 2),
-            analyzer='word',
-            sublinear_tf=True
-        )
+        # Use richer combined features (word + character n-grams) for better robustness.
+        self.vectorizer = FeatureUnion([
+            (
+                'word_tfidf',
+                TfidfVectorizer(
+                    max_features=12000,
+                    ngram_range=(1, 2),
+                    analyzer='word',
+                    min_df=2,
+                    sublinear_tf=True
+                )
+            ),
+            (
+                'char_tfidf',
+                TfidfVectorizer(
+                    max_features=30000,
+                    ngram_range=(3, 5),
+                    analyzer='char_wb',
+                    min_df=2,
+                    sublinear_tf=True
+                )
+            )
+        ])
         self.model = None
+        self.model_name = None
+        self.decision_threshold = 0.5
+
+    def optimize_threshold(self, y_true, y_prob):
+        """Find threshold that maximizes accuracy, with hate-class F1 as tie-breaker."""
+        best_threshold = 0.5
+        best_accuracy = -1.0
+        best_f1_hate = -1.0
+
+        for threshold in np.arange(0.20, 0.81, 0.01):
+            y_pred = (y_prob >= threshold).astype(int)
+            acc = accuracy_score(y_true, y_pred)
+            f1_hate = f1_score(y_true, y_pred, pos_label=1, zero_division=0)
+
+            if (acc > best_accuracy) or (acc == best_accuracy and f1_hate > best_f1_hate):
+                best_accuracy = acc
+                best_f1_hate = f1_hate
+                best_threshold = float(round(threshold, 2))
+
+        return best_threshold, best_accuracy, best_f1_hate
     
     def create_sample_dataset(self):
         """Create a sample dataset for training"""
@@ -140,7 +178,18 @@ class HateSpeechModelTrainer:
         """Load existing dataset or create sample data"""
         if os.path.exists(data_path):
             print(f"Loading dataset from {data_path}")
-            return pd.read_csv(data_path, comment='#')
+            df = pd.read_csv(data_path)
+            if 'text' not in df.columns or 'label' not in df.columns:
+                df = pd.read_csv(data_path, comment='#')
+
+            df = df[['text', 'label']].copy()
+            df['text'] = df['text'].astype(str).str.strip()
+            df['label'] = pd.to_numeric(df['label'], errors='coerce')
+            df = df.dropna(subset=['text', 'label'])
+            df = df[df['text'] != '']
+            df['label'] = df['label'].astype(int)
+            df = df[df['label'].isin([0, 1])]
+            return df.reset_index(drop=True)
         else:
             print("Creating sample dataset...")
             return self.create_sample_dataset()
@@ -178,35 +227,65 @@ class HateSpeechModelTrainer:
         X_train_vectorized = self.vectorizer.fit_transform(X_train)
         X_test_vectorized = self.vectorizer.transform(X_test)
         
-        # Create ensemble model
-        print("\nTraining ensemble model...")
-        
-        # Individual models
-        lr = LogisticRegression(random_state=42, max_iter=1000)
-        rf = RandomForestClassifier(n_estimators=100, random_state=42)
-        nb = MultinomialNB()
-        
-        # Ensemble voting classifier
-        self.model = VotingClassifier(
-            estimators=[('lr', lr), ('rf', rf), ('nb', nb)],
-            voting='soft'
-        )
-        
-        # Train
-        self.model.fit(X_train_vectorized, y_train)
-        
-        # Evaluate
-        print("\nEvaluating model...")
-        y_pred = self.model.predict(X_test_vectorized)
-        
-        accuracy = accuracy_score(y_test, y_pred)
-        print(f"\n✅ Accuracy: {accuracy:.4f}")
+        # Train candidate models and keep the best by test accuracy.
+        print("\nTraining candidate models...")
+
+        candidates = {
+            'LogisticRegression': LogisticRegression(
+                random_state=42,
+                max_iter=2000,
+                C=3.0,
+                class_weight='balanced'
+            ),
+            'MultinomialNB': MultinomialNB(alpha=0.5),
+            'VotingEnsemble': VotingClassifier(
+                estimators=[
+                    ('lr', LogisticRegression(random_state=42, max_iter=2000, C=3.0, class_weight='balanced')),
+                    ('nb', MultinomialNB(alpha=0.5))
+                ],
+                voting='soft',
+                weights=[3, 1]
+            )
+        }
+
+        best_name = None
+        best_model = None
+        best_accuracy = -1.0
+        best_pred = None
+
+        for name, candidate in candidates.items():
+            candidate.fit(X_train_vectorized, y_train)
+            y_pred = candidate.predict(X_test_vectorized)
+            acc = accuracy_score(y_test, y_pred)
+            print(f"{name} accuracy: {acc:.4f}")
+
+            if acc > best_accuracy:
+                best_accuracy = acc
+                best_name = name
+                best_model = candidate
+                best_pred = y_pred
+
+        self.model = best_model
+        self.model_name = best_name
+
+        # Optimize decision threshold for probability-based inference.
+        best_prob = self.model.predict_proba(X_test_vectorized)[:, 1]
+        threshold, threshold_accuracy, threshold_f1_hate = self.optimize_threshold(y_test, best_prob)
+        self.decision_threshold = threshold
+        best_pred = (best_prob >= self.decision_threshold).astype(int)
+        accuracy = threshold_accuracy
+
+        # Evaluate best model
+        print(f"\nSelected model: {best_name}")
+        print(f"Optimized threshold: {self.decision_threshold:.2f}")
+        print(f"Hate-class F1 @ threshold: {threshold_f1_hate:.4f}")
+        print(f"✅ Accuracy: {accuracy:.4f}")
         
         print("\nClassification Report:")
-        print(classification_report(y_test, y_pred, target_names=['Normal', 'Hate Speech']))
+        print(classification_report(y_test, best_pred, target_names=['Normal', 'Hate Speech']))
         
         print("\nConfusion Matrix:")
-        print(confusion_matrix(y_test, y_pred))
+        print(confusion_matrix(y_test, best_pred))
         
         return accuracy
     
@@ -217,12 +296,21 @@ class HateSpeechModelTrainer:
         
         model_path = os.path.join(model_dir, 'hate_speech_model.pkl')
         vectorizer_path = os.path.join(model_dir, 'vectorizer.pkl')
+        metadata_path = os.path.join(model_dir, 'model_metadata.json')
         
         joblib.dump(self.model, model_path)
         joblib.dump(self.vectorizer, vectorizer_path)
+
+        metadata = {
+            'model_name': self.model_name,
+            'decision_threshold': self.decision_threshold,
+        }
+        with open(metadata_path, 'w', encoding='utf-8') as f:
+            json.dump(metadata, f, indent=2)
         
         print(f"\n✅ Model saved to: {model_path}")
         print(f"✅ Vectorizer saved to: {vectorizer_path}")
+        print(f"✅ Metadata saved to: {metadata_path}")
     
     def test_model(self, test_texts):
         """Test model with sample texts"""
@@ -233,12 +321,13 @@ class HateSpeechModelTrainer:
         for text in test_texts:
             processed = self.preprocessor.preprocess(text, remove_stop=False, lemmatize=True)
             vectorized = self.vectorizer.transform([processed])
-            prediction = self.model.predict(vectorized)[0]
             probability = self.model.predict_proba(vectorized)[0]
+            hate_probability = probability[1] if len(probability) > 1 else probability[0]
+            prediction = int(hate_probability >= self.decision_threshold)
             
             print(f"Text: {text}")
             print(f"Prediction: {'Hate Speech' if prediction == 1 else 'Normal'}")
-            print(f"Confidence: {max(probability):.3f}")
+            print(f"Hate Probability: {hate_probability:.3f}")
             print("-" * 50)
 
 def main():

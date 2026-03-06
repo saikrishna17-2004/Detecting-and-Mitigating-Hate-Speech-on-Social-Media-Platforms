@@ -43,11 +43,20 @@ def create_app():
             'message': 'Hate Speech Detection API',
             'version': '1.0.0',
             'endpoints': {
+                'health': '/health',
                 'analyze': '/api/analyze',
                 'users': '/api/users',
                 'violations': '/api/violations',
                 'statistics': '/api/statistics'
             }
+        })
+
+    @app.route('/health')
+    def health():
+        return jsonify({
+            'status': 'healthy',
+            'ready': True,
+            'server': 'app'
         })
     
     return app

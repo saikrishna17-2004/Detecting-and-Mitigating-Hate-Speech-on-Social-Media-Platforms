@@ -10,9 +10,10 @@ import {
   Link,
   Alert,
 } from '@mui/material';
-import { authAPI } from '../../services/api';
+import { authAPI, withApiFeedback } from '../../services/api';
+import { translate } from '../../i18n/translations';
 
-function Register({ onRegister }) {
+function Register({ onRegister, uiLanguage = 'english' }) {
   const [formData, setFormData] = useState({
     username: '',
     email: '',
@@ -36,23 +37,27 @@ function Register({ onRegister }) {
 
     // Validate passwords match
     if (formData.password !== formData.confirmPassword) {
-      setError('Passwords do not match');
+      setError(translate(uiLanguage, 'passwordsDoNotMatch'));
       return;
     }
 
     setLoading(true);
 
-    try {
-      const { confirmPassword, ...registrationData } = formData;
-      const response = await authAPI.register(registrationData);
-      const userData = response.data.user;
+    const { confirmPassword, ...registrationData } = formData;
+    const result = await withApiFeedback({
+      request: () => authAPI.register(registrationData),
+      uiLanguage,
+      errorFallback: translate(uiLanguage, 'registrationFailed'),
+      setError,
+    });
+
+    if (result.ok) {
+      const userData = result.response.data.user;
       onRegister(userData);
       navigate('/');
-    } catch (err) {
-      setError(err.response?.data?.error || 'Registration failed. Please try again.');
-    } finally {
-      setLoading(false);
     }
+
+    setLoading(false);
   };
 
   return (
@@ -82,7 +87,7 @@ function Register({ onRegister }) {
               marginBottom: 1,
             }}
           >
-            Social Feed
+            {translate(uiLanguage, 'appName')}
           </Typography>
           <Typography
             variant="body2"
@@ -90,7 +95,7 @@ function Register({ onRegister }) {
             color="text.secondary"
             sx={{ mb: 3 }}
           >
-            Sign up to see photos and videos from your friends.
+            {translate(uiLanguage, 'signupTagline')}
           </Typography>
 
           {error && (
@@ -105,7 +110,7 @@ function Register({ onRegister }) {
               required
               fullWidth
               id="email"
-              label="Email"
+              label={translate(uiLanguage, 'email')}
               name="email"
               autoComplete="email"
               autoFocus
@@ -118,7 +123,7 @@ function Register({ onRegister }) {
               required
               fullWidth
               id="username"
-              label="Username"
+              label={translate(uiLanguage, 'username')}
               name="username"
               autoComplete="username"
               value={formData.username}
@@ -130,7 +135,7 @@ function Register({ onRegister }) {
               required
               fullWidth
               name="password"
-              label="Password"
+              label={translate(uiLanguage, 'password')}
               type="password"
               id="password"
               autoComplete="new-password"
@@ -143,7 +148,7 @@ function Register({ onRegister }) {
               required
               fullWidth
               name="confirmPassword"
-              label="Confirm Password"
+              label={translate(uiLanguage, 'confirmPassword')}
               type="password"
               id="confirmPassword"
               value={formData.confirmPassword}
@@ -157,7 +162,7 @@ function Register({ onRegister }) {
               sx={{ mt: 3, mb: 2 }}
               disabled={loading}
             >
-              {loading ? 'Signing up...' : 'Sign Up'}
+              {loading ? translate(uiLanguage, 'signingUp') : translate(uiLanguage, 'signUpAction')}
             </Button>
           </Box>
         </Paper>
@@ -173,9 +178,9 @@ function Register({ onRegister }) {
           }}
         >
           <Typography variant="body2">
-            Have an account?{' '}
+            {translate(uiLanguage, 'haveAccount')}{' '}
             <Link component={RouterLink} to="/login" underline="none">
-              Log in
+              {translate(uiLanguage, 'logIn')}
             </Link>
           </Typography>
         </Paper>

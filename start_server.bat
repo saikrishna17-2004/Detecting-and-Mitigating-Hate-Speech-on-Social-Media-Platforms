@@ -13,12 +13,12 @@ echo ============================================================
 echo Launching Hate Speech Detection Backend Server (new window)
 echo ============================================================
 
-REM Use PowerShell to activate venv and run full backend with waitress
+REM Use PowerShell to activate venv and run Waitress production backend
 REM -NoExit keeps the window open so the server persists
 start "Hate Speech API" powershell -NoExit -Command ^
 	"cd '%PROJ_DIR:'=%'; ^
 	 .\.venv\Scripts\Activate.ps1; ^
-	 $env:RUN_BACKEND_DIRECT='1'; python run_backend.py"
+	 python run_backend.py"
 
 echo Started. A new PowerShell window should now be running the server.
 echo If you don't see it, check your taskbar or alt-tab.

@@ -1,20 +1,41 @@
 # Stop Backend Server
 # This script stops the backend server if it's running
 
-Write-Host "`n🛑 Stopping Backend Server..." -ForegroundColor Cyan
+Write-Host "`nStopping Backend Server..." -ForegroundColor Cyan
 
-# Find the backend process
-$backendProcess = Get-Process python -ErrorAction SilentlyContinue | Where-Object {
-    $_.CommandLine -like "*backend\app.py*"
+# Stop process listening on backend port first (most reliable)
+$listenerPids = Get-NetTCPConnection -LocalPort 5000 -State Listen -ErrorAction SilentlyContinue |
+    Select-Object -ExpandProperty OwningProcess -Unique
+
+foreach ($pid in $listenerPids) {
+    try {
+        Stop-Process -Id $pid -Force -ErrorAction Stop
+        Write-Host "Stopped listener process PID: $pid" -ForegroundColor Green
+    } catch {
+    }
 }
+
+# Fallback: stop known backend python processes by commandline
+$backendProcess = Get-CimInstance Win32_Process -ErrorAction SilentlyContinue |
+    Where-Object {
+        $_.Name -match '^python(\.exe)?$' -and (
+            $_.CommandLine -like '*run_backend.py*' -or
+            $_.CommandLine -like '*run_flask_dev.py*' -or
+            $_.CommandLine -like '*server.py*' -or
+            $_.CommandLine -like '*backend\\app.py*'
+        )
+    }
 
 if ($backendProcess) {
-    Write-Host "Found backend server (PID: $($backendProcess.Id))" -ForegroundColor Yellow
-    Stop-Process -Id $backendProcess.Id -Force
-    Write-Host "✅ Backend server stopped successfully!" -ForegroundColor Green
+    foreach ($proc in $backendProcess) {
+        try {
+            Stop-Process -Id $proc.ProcessId -Force -ErrorAction Stop
+            Write-Host "Stopped backend process PID: $($proc.ProcessId)" -ForegroundColor Green
+        } catch {
+        }
+    }
 } else {
-    Write-Host "⚠️  Backend server is not running" -ForegroundColor Yellow
+    if (-not $listenerPids) {
+        Write-Host "Backend server is not running" -ForegroundColor Yellow
+    }
 }
-
-Write-Host "`nPress any key to continue..."
-$null = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")

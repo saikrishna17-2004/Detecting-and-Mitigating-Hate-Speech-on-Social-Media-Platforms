@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import Keyboard from 'react-simple-keyboard';
 import 'react-simple-keyboard/build/css/index.css';
 import './IndianLanguageKeyboard.css';
@@ -14,6 +14,7 @@ import {
 } from '@mui/material';
 import KeyboardIcon from '@mui/icons-material/Keyboard';
 import KeyboardHideIcon from '@mui/icons-material/KeyboardHide';
+import { translate } from '../../i18n/translations';
 
 // Keyboard layouts for major Indian languages
 const keyboardLayouts = {
@@ -206,14 +207,57 @@ const keyboardLayouts = {
   }
 };
 
-const IndianLanguageKeyboard = ({ value, onChange, onKeyPress }) => {
-  const [selectedLanguage, setSelectedLanguage] = useState('english');
+const emojiLayout = {
+  default: [
+    '😀 😂 😍 😎 😢 😡 👍 👎 ❤️ 🔥',
+    '🙏 🎉 😁 🤔 😴 😇 😜 😱 😅 🤗',
+    '{abc} {space} {bksp}'
+  ]
+};
+
+const withEmojiKey = (layout) => {
+  if (!layout) {
+    return layout;
+  }
+
+  const appendEmojiKey = (rows = []) => {
+    if (!rows.length) {
+      return rows;
+    }
+
+    const nextRows = [...rows];
+    const lastIndex = nextRows.length - 1;
+    const lastRow = nextRows[lastIndex] || '';
+
+    if (!lastRow.includes('{emoji}')) {
+      nextRows[lastIndex] = `${lastRow} {emoji}`.trim();
+    }
+
+    return nextRows;
+  };
+
+  return {
+    default: appendEmojiKey(layout.default),
+    shift: appendEmojiKey(layout.shift),
+  };
+};
+
+const IndianLanguageKeyboard = ({ value, onChange, onKeyPress, selectedLanguage: selectedLanguageProp = 'english', onLanguageChange }) => {
+  const [selectedLanguage, setSelectedLanguage] = useState(selectedLanguageProp);
   const [layoutName, setLayoutName] = useState('default');
   const [isVisible, setIsVisible] = useState(false);
   const keyboard = useRef();
 
+  useEffect(() => {
+    setSelectedLanguage(selectedLanguageProp || 'english');
+  }, [selectedLanguageProp]);
+
   const handleLanguageChange = (event) => {
-    setSelectedLanguage(event.target.value);
+    const nextLanguage = event.target.value;
+    setSelectedLanguage(nextLanguage);
+    if (onLanguageChange) {
+      onLanguageChange(nextLanguage);
+    }
     setLayoutName('default');
   };
 
@@ -222,11 +266,24 @@ const IndianLanguageKeyboard = ({ value, onChange, onKeyPress }) => {
   };
 
   const handleShift = () => {
+    if (layoutName === 'emoji') {
+      return;
+    }
     const newLayoutName = layoutName === 'default' ? 'shift' : 'default';
     setLayoutName(newLayoutName);
   };
 
   const onKeyPressHandler = (button) => {
+    if (button === '{emoji}') {
+      setLayoutName('emoji');
+      return;
+    }
+
+    if (button === '{abc}') {
+      setLayoutName('default');
+      return;
+    }
+
     if (button === '{shift}') {
       handleShift();
     } else if (button === '{bksp}') {
@@ -245,16 +302,18 @@ const IndianLanguageKeyboard = ({ value, onChange, onKeyPress }) => {
     }
   };
 
-  const currentLayout = keyboardLayouts[selectedLanguage];
+  const currentLanguageLayout = withEmojiKey(keyboardLayouts[selectedLanguage]);
+  const activeLayout = layoutName === 'emoji' ? emojiLayout : currentLanguageLayout;
+  const activeLayoutName = layoutName === 'emoji' ? 'default' : layoutName;
 
   return (
     <Box sx={{ width: '100%', mt: 2 }}>
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 1 }}>
         <FormControl size="small" sx={{ minWidth: 200 }}>
-          <InputLabel>Keyboard Language</InputLabel>
+          <InputLabel>{translate(selectedLanguage, 'keyboardLanguage')}</InputLabel>
           <Select
             value={selectedLanguage}
-            label="Keyboard Language"
+            label={translate(selectedLanguage, 'keyboardLanguage')}
             onChange={handleLanguageChange}
           >
             <MenuItem value="english">{keyboardLayouts.english.name}</MenuItem>
@@ -284,8 +343,8 @@ const IndianLanguageKeyboard = ({ value, onChange, onKeyPress }) => {
         <Paper elevation={3} sx={{ p: 2, bgcolor: '#f5f5f5' }}>
           <Keyboard
             keyboardRef={r => (keyboard.current = r)}
-            layoutName={layoutName}
-            layout={currentLayout}
+            layoutName={activeLayoutName}
+            layout={activeLayout}
             onChange={onKeyboardChange}
             onKeyPress={onKeyPressHandler}
             theme="hg-theme-default"
@@ -293,7 +352,9 @@ const IndianLanguageKeyboard = ({ value, onChange, onKeyPress }) => {
             display={{
               '{bksp}': '⌫',
               '{shift}': '⇧',
-              '{space}': 'Space'
+              '{space}': translate(selectedLanguage, 'keyboardSpace'),
+              '{emoji}': '😊',
+              '{abc}': 'ABC'
             }}
             buttonTheme={[
               {
@@ -307,6 +368,10 @@ const IndianLanguageKeyboard = ({ value, onChange, onKeyPress }) => {
               {
                 class: 'hg-bksp',
                 buttons: '{bksp}'
+              },
+              {
+                class: 'hg-emoji',
+                buttons: '{emoji} {abc}'
               }
             ]}
             buttonAttributes={[

@@ -2,7 +2,7 @@
   "name": "backend",
   "private": true,
   "scripts": {
-    "start": "..\\start_server.bat",
+    "start": "powershell -ExecutionPolicy Bypass -Command \"cd ..; .\\.venv\\Scripts\\Activate.ps1; python run_flask_dev.py\"",
     "start:dev": "powershell -ExecutionPolicy Bypass -Command \"cd ..; .\\.venv\\Scripts\\Activate.ps1; python run_flask_dev.py\""
   }
 }

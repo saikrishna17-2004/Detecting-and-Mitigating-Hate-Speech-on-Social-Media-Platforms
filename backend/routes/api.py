@@ -21,12 +21,16 @@ from backend.database import (
     count_posts,
     list_posts,
     create_post as create_post_doc,
+    add_comment_to_post,
     get_post_by_id,
     update_post,
     delete_post_by_id,
     list_posts_by_user,
     to_violation_dict,
-    to_post_dict
+    to_post_dict,
+    follow_user,
+    unfollow_user,
+    is_following
 )
 from backend.models.detector import detector
 from backend.utils.email_service import email_service
@@ -54,7 +58,7 @@ def require_api_key_optional(f):
             # Validate and track if API key provided
             is_valid, key_doc, error = validate_api_key(api_key)
             if not is_valid:
-                return jsonify({'error': error}), 401
+                return jsonify({'error': error, 'error_key': 'invalid_api_key'}), 401
             
             # Track API call
             track_api_call(api_key)
@@ -79,20 +83,28 @@ def register():
         password = data.get('password')
         
         if not all([username, email, password]):
-            return jsonify({'error': 'All fields are required'}), 400
+            return jsonify({'error': 'All fields are required', 'error_key': 'all_fields_required'}), 400
         
         # Check if username already exists
         if get_user_by_username(username):
-            return jsonify({'error': 'Username already exists'}), 400
+            return jsonify({'error': 'Username already exists', 'error_key': 'username_exists'}), 400
         
         # Check if email already exists
         if get_user_by_email(email):
-            return jsonify({'error': 'Email already exists'}), 400
+            return jsonify({'error': 'Email already exists', 'error_key': 'email_exists'}), 400
         
         # Create new user
         user = create_user(username=username, email=email, password=password)
         
-        return jsonify({'success': True, 'user': to_user_dict(user)}), 201
+        return jsonify({
+            'success': True,
+            'user': to_user_dict(user),
+            'message': 'Registration successful',
+            'message_key': 'registration_successful',
+            'message_params': {
+                'username': user.get('username')
+            }
+        }), 201
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
@@ -105,26 +117,39 @@ def login():
         password = data.get('password')
         
         if not all([username, password]):
-            return jsonify({'error': 'Username and password are required'}), 400
+            return jsonify({'error': 'Username and password are required', 'error_key': 'username_password_required'}), 400
         
         # Find user
         user = get_user_by_username(username)
         
         if not user or not check_password(user, password):
-            return jsonify({'error': 'Invalid credentials'}), 401
+            return jsonify({'error': 'Invalid credentials', 'error_key': 'invalid_credentials'}), 401
         
         # Check if suspended
         if user.get('is_suspended'):
-            return jsonify({'error': 'Account is suspended'}), 403
+            return jsonify({'error': 'Account is suspended', 'error_key': 'account_suspended'}), 403
         
-        return jsonify({'success': True, 'user': to_user_dict(user)}), 200
+        return jsonify({
+            'success': True,
+            'user': to_user_dict(user),
+            'message': 'Login successful',
+            'message_key': 'login_successful',
+            'message_params': {
+                'username': user.get('username')
+            }
+        }), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
 @api_bp.route('/auth/logout', methods=['POST'])
 def logout():
     """Logout user"""
-    return jsonify({'success': True, 'message': 'Logged out successfully'}), 200
+    return jsonify({
+        'success': True,
+        'message': 'Logged out successfully',
+        'message_key': 'logout_successful',
+        'message_params': {}
+    }), 200
 
 
 
@@ -172,7 +197,7 @@ def analyze_text():
         data = request.get_json()
         
         if not data or 'text' not in data:
-            return jsonify({'error': 'Text is required'}), 400
+            return jsonify({'error': 'Text is required', 'error_key': 'text_required'}), 400
         
         text = data['text']
         user_id = data.get('user_id')
@@ -201,13 +226,20 @@ def analyze_text():
             action_taken = 'warning'
         else:
             action_taken = 'none'
+
+        message_payload = get_action_message_payload(
+            action_taken,
+            user.get('warning_count', 0) if user else 0
+        )
         
         return jsonify({
             'success': True,
             'result': result,
             'action_taken': action_taken,
             'user_status': to_user_dict(user) if user else None,
-            'message': get_action_message(action_taken, user.get('warning_count', 0) if user else 0),
+            'message': message_payload['message'],
+            'message_key': message_payload['message_key'],
+            'message_params': message_payload['message_params'],
             'api_tier': request.api_key_tier  # Show which tier was used
         }), 200
         
@@ -216,12 +248,33 @@ def analyze_text():
 
 @api_bp.route('/users', methods=['GET'])
 def get_users():
-    """Get all users"""
+    """Get users, optionally filtered by username query."""
     try:
+        viewer_id = request.args.get('viewer_id', type=int)
         users = list_users()
+
+        username_query = (request.args.get('username') or '').strip().lower()
+        if username_query:
+            users = [
+                user for user in users
+                if username_query in (user.get('username') or '').lower()
+            ]
+
+        serialized_users = [to_user_dict(user) for user in users]
+        if viewer_id:
+            viewer_user = get_user_by_id(viewer_id)
+            following_ids = set((viewer_user or {}).get('following_ids', []) or [])
+            for serialized_user in serialized_users:
+                target_id = serialized_user.get('id')
+                serialized_user['is_following'] = bool(
+                    target_id
+                    and target_id != viewer_id
+                    and target_id in following_ids
+                )
+
         return jsonify({
             'success': True,
-            'users': [to_user_dict(user) for user in users],
+            'users': serialized_users,
             'total': len(users)
         }), 200
     except Exception as e:
@@ -231,15 +284,93 @@ def get_users():
 def get_user(user_id):
     """Get user details"""
     try:
+        viewer_id = request.args.get('viewer_id', type=int)
         user = get_user_by_id(user_id)
         if not user:
-            return jsonify({'error': 'User not found'}), 404
+            return jsonify({'error': 'User not found', 'error_key': 'user_not_found'}), 404
         violations = list_violations_by_user(user_id)
+        user_payload = to_user_dict(user)
+        user_payload['is_following'] = bool(
+            viewer_id
+            and viewer_id != user_id
+            and is_following(viewer_id, user_id)
+        )
         
         return jsonify({
             'success': True,
-            'user': to_user_dict(user),
+            'user': user_payload,
             'violations': [to_violation_dict(v) for v in violations]
+        }), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@api_bp.route('/users/<int:user_id>/follow', methods=['POST'])
+def follow_target_user(user_id):
+    """Follow a user"""
+    try:
+        data = request.get_json(silent=True) or {}
+        follower_id = data.get('follower_id')
+
+        if not follower_id:
+            return jsonify({'error': 'follower_id is required'}), 400
+
+        try:
+            follower_id = int(follower_id)
+        except (TypeError, ValueError):
+            return jsonify({'error': 'follower_id must be a valid integer'}), 400
+
+        if follower_id == user_id:
+            return jsonify({'error': 'You cannot follow yourself'}), 400
+
+        follower = get_user_by_id(follower_id)
+        target_user = get_user_by_id(user_id)
+        if not follower or not target_user:
+            return jsonify({'error': 'User not found', 'error_key': 'user_not_found'}), 404
+
+        _, updated_target_user = follow_user(follower_id, user_id)
+        user_payload = to_user_dict(updated_target_user)
+        user_payload['is_following'] = True
+
+        return jsonify({
+            'success': True,
+            'user': user_payload,
+            'message': f"You are now following {target_user.get('username')}"
+        }), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@api_bp.route('/users/<int:user_id>/unfollow', methods=['POST'])
+def unfollow_target_user(user_id):
+    """Unfollow a user"""
+    try:
+        data = request.get_json(silent=True) or {}
+        follower_id = data.get('follower_id')
+
+        if not follower_id:
+            return jsonify({'error': 'follower_id is required'}), 400
+
+        try:
+            follower_id = int(follower_id)
+        except (TypeError, ValueError):
+            return jsonify({'error': 'follower_id must be a valid integer'}), 400
+
+        if follower_id == user_id:
+            return jsonify({'error': 'You cannot unfollow yourself'}), 400
+
+        follower = get_user_by_id(follower_id)
+        target_user = get_user_by_id(user_id)
+        if not follower or not target_user:
+            return jsonify({'error': 'User not found', 'error_key': 'user_not_found'}), 404
+
+        _, updated_target_user = unfollow_user(follower_id, user_id)
+        user_payload = to_user_dict(updated_target_user)
+        user_payload['is_following'] = False
+
+        return jsonify({
+            'success': True,
+            'user': user_payload,
+            'message': f"You unfollowed {target_user.get('username')}"
         }), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
@@ -254,7 +385,7 @@ def warn_user(user_id):
 
         user = get_user_by_id(user_id)
         if not user:
-            return jsonify({'error': 'User not found'}), 404
+            return jsonify({'error': 'User not found', 'error_key': 'user_not_found'}), 404
 
         user = increment_user_warning(user_id, 1)
 
@@ -290,6 +421,10 @@ def warn_user(user_id):
             'success': True,
             'user': to_user_dict(user),
             'message': f"User {user.get('username')} has been warned. Email notification sent.",
+            'message_key': 'user_warned_email_sent',
+            'message_params': {
+                'username': user.get('username')
+            },
             'suspended': should_suspend
         }), 200
     except Exception as e:
@@ -305,7 +440,7 @@ def suspend_user(user_id):
 
         user = get_user_by_id(user_id)
         if not user:
-            return jsonify({'error': 'User not found'}), 404
+            return jsonify({'error': 'User not found', 'error_key': 'user_not_found'}), 404
 
         user = update_user(user_id, {
             'is_suspended': True,
@@ -329,7 +464,11 @@ def suspend_user(user_id):
         return jsonify({
             'success': True,
             'user': to_user_dict(user),
-            'message': f"User {user.get('username')} has been suspended. Email notification sent."
+            'message': f"User {user.get('username')} has been suspended. Email notification sent.",
+            'message_key': 'user_suspended_email_sent',
+            'message_params': {
+                'username': user.get('username')
+            }
         }), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
@@ -351,7 +490,11 @@ def unsuspend_user(user_id):
         return jsonify({
             'success': True,
             'user': to_user_dict(user),
-            'message': f"User {user.get('username')} has been unsuspended"
+            'message': f"User {user.get('username')} has been unsuspended",
+            'message_key': 'user_unsuspended',
+            'message_params': {
+                'username': user.get('username')
+            }
         }), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
@@ -437,14 +580,27 @@ def get_posts():
     """Get all posts (feed)"""
     try:
         page = request.args.get('page', 1, type=int)
+        viewer_id = request.args.get('viewer_id', type=int)
         per_page = 20
 
         posts, total = list_posts(page=page, per_page=per_page, include_hate=False)
         pages = (total + per_page - 1) // per_page
+        serialized_posts = [to_post_dict(post) for post in posts]
+
+        if viewer_id:
+            viewer_user = get_user_by_id(viewer_id)
+            following_ids = set((viewer_user or {}).get('following_ids', []) or [])
+            for post in serialized_posts:
+                post_owner_id = post.get('user_id')
+                post['is_following'] = bool(
+                    post_owner_id
+                    and post_owner_id != viewer_id
+                    and post_owner_id in following_ids
+                )
 
         return jsonify({
             'success': True,
-            'posts': [to_post_dict(post) for post in posts],
+            'posts': serialized_posts,
             'total': total,
             'page': page,
             'pages': pages
@@ -478,9 +634,9 @@ def update_lexicon():
         path = data.get('path', 'data/hate_keywords.txt')
 
         if not content:
-            return jsonify({'error': 'content is required'}), 400
+            return jsonify({'error': 'content is required', 'error_key': 'content_required'}), 400
         if mode not in ('append', 'replace'):
-            return jsonify({'error': "mode must be 'append' or 'replace'"}), 400
+            return jsonify({'error': "mode must be 'append' or 'replace'", 'error_key': 'invalid_mode'}), 400
 
         # Ensure directory exists
         import os
@@ -549,9 +705,9 @@ def update_language_lexicon(lang_code):
         mode = (data.get('mode') or 'append').lower()
         
         if not content:
-            return jsonify({'error': 'content is required'}), 400
+            return jsonify({'error': 'content is required', 'error_key': 'content_required'}), 400
         if mode not in ('append', 'replace'):
-            return jsonify({'error': "mode must be 'append' or 'replace'"}), 400
+            return jsonify({'error': "mode must be 'append' or 'replace'", 'error_key': 'invalid_mode'}), 400
         
         path = f'data/hate_keywords_{lang_code}.txt'
         
@@ -638,7 +794,10 @@ def create_post():
         
         # Check if user is suspended
         if user.get('is_suspended'):
-            return jsonify({'error': 'Your account is suspended'}), 403
+            return jsonify({
+                'error': 'Your account is suspended',
+                'error_key': 'account_suspended'
+            }), 403
         
         # Analyze textual content for hate speech (image-only posts skip text analysis)
         analysis = detector.analyze(content) if content else {
@@ -698,6 +857,7 @@ def create_post():
             return jsonify({
                 'success': False,
                 'error': 'Post contains high-confidence hate speech and was blocked',
+                'error_key': 'post_blocked_high_confidence_hate_speech',
                 'analysis': analysis,
                 'user_status': to_user_dict(user),
                 'email_sent': True
@@ -785,6 +945,49 @@ def unlike_post(post_id):
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+
+@api_bp.route('/posts/<int:post_id>/comments', methods=['POST'])
+def add_post_comment(post_id):
+    """Add a comment to a post"""
+    try:
+        post = get_post_by_id(post_id)
+        if not post:
+            return jsonify({'error': 'Post not found'}), 404
+
+        data = request.get_json(silent=True) or {}
+        comment_text = (data.get('comment') or '').strip()
+        if not comment_text:
+            return jsonify({'error': 'comment is required'}), 400
+
+        user_id = data.get('user_id')
+        username = data.get('username')
+
+        if user_id:
+            try:
+                user_id = int(user_id)
+            except (TypeError, ValueError):
+                user_id = None
+
+        comment_user = get_user_by_id(user_id) if user_id else None
+        if not username:
+            username = (comment_user or {}).get('username') or 'user'
+
+        comment_doc = {
+            'user_id': user_id,
+            'username': username,
+            'text': comment_text,
+            'created_at': datetime.utcnow().isoformat()
+        }
+
+        add_comment_to_post(post_id, comment_doc)
+
+        return jsonify({
+            'success': True,
+            'comment': comment_doc
+        }), 201
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
 @api_bp.route('/users/<int:user_id>/posts', methods=['GET'])
 def get_user_posts(user_id):
     """Get posts by a specific user"""
@@ -811,13 +1014,15 @@ def test_email():
         recipient_email = data.get('email')
         
         if not recipient_email:
-            return jsonify({'error': 'Email address is required'}), 400
+            return jsonify({'error': 'Email address is required', 'error_key': 'email_required'}), 400
         
         # Check if email service is configured
         if not email_service.enabled:
             return jsonify({
                 'success': False,
                 'message': 'Email service is not configured. Set SMTP credentials in .env file.',
+                'message_key': 'email_service_not_configured',
+                'message_params': {},
                 'configured': False
             }), 200
         
@@ -827,6 +1032,8 @@ def test_email():
         return jsonify({
             'success': success,
             'message': 'Test email sent successfully!' if success else 'Failed to send test email',
+            'message_key': 'test_email_sent_success' if success else 'test_email_send_failed',
+            'message_params': {},
             'configured': True
         }), 200
     except Exception as e:
@@ -845,14 +1052,40 @@ def email_status():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-def get_action_message(action, warning_count):
-    """Get user-friendly message based on action taken"""
+def get_action_message_payload(action, warning_count):
+    """Get a stable message key + params and a human-readable fallback message."""
     if action == 'suspended':
-        return f"⛔ Your account has been suspended due to repeated violations of community guidelines."
+        return {
+            'message_key': 'account_suspended_repeated_violations',
+            'message_params': {},
+            'message': '⛔ Your account has been suspended due to repeated violations of community guidelines.'
+        }
     elif action == 'warning':
-        return f"⚠️ Warning {warning_count}/{MAX_WARNINGS}: Your content contains hate speech. Further violations will result in suspension."
+        return {
+            'message_key': 'warning_content_hate_speech',
+            'message_params': {
+                'warning_count': warning_count,
+                'max_warnings': MAX_WARNINGS
+            },
+            'message': f"⚠️ Warning {warning_count}/{MAX_WARNINGS}: Your content contains hate speech. Further violations will result in suspension."
+        }
+    elif action == 'block':
+        return {
+            'message_key': 'content_blocked_high_confidence',
+            'message_params': {},
+            'message': '⛔ Content blocked due to high-confidence hate speech.'
+        }
     else:
-        return "✅ Content is appropriate."
+        return {
+            'message_key': 'content_appropriate',
+            'message_params': {},
+            'message': '✅ Content is appropriate.'
+        }
+
+
+def get_action_message(action, warning_count):
+    """Backward-compatible plain message helper."""
+    return get_action_message_payload(action, warning_count)['message']
 
 # =============================================================================
 # API Key Management Endpoints (SaaS Features)
@@ -883,10 +1116,10 @@ def generate_api_key():
         tier = data.get('tier', 'free')
         
         if not user_id:
-            return jsonify({'error': 'user_id required'}), 400
+            return jsonify({'error': 'user_id required', 'error_key': 'user_id_required'}), 400
         
         if tier not in ['free', 'pro', 'enterprise']:
-            return jsonify({'error': 'Invalid tier. Must be free, pro, or enterprise'}), 400
+            return jsonify({'error': 'Invalid tier. Must be free, pro, or enterprise', 'error_key': 'invalid_tier'}), 400
         
         # Create API key
         key_info = create_api_key(user_id, tier)
@@ -896,7 +1129,9 @@ def generate_api_key():
             'api_key': key_info['api_key'],
             'tier': key_info['tier'],
             'calls_limit': key_info['calls_limit'],
-            'message': '⚠️ Save this API key! It will not be shown again.'
+            'message': '⚠️ Save this API key! It will not be shown again.',
+            'message_key': 'save_api_key_once',
+            'message_params': {}
         }), 201
     except Exception as e:
         return jsonify({'error': str(e)}), 500
@@ -921,12 +1156,12 @@ def check_api_usage():
         api_key = request.headers.get('X-API-Key')
         
         if not api_key:
-            return jsonify({'error': 'X-API-Key header required'}), 401
+            return jsonify({'error': 'X-API-Key header required', 'error_key': 'api_key_header_required'}), 401
         
         usage = get_api_usage(api_key)
         
         if not usage:
-            return jsonify({'error': 'Invalid API key'}), 401
+            return jsonify({'error': 'Invalid API key', 'error_key': 'invalid_api_key'}), 401
         
         return jsonify({
             'success': True,
@@ -989,7 +1224,7 @@ def webhook_analyze():
         # Require API key for webhooks
         api_key = request.headers.get('X-API-Key')
         if not api_key:
-            return jsonify({'error': 'API key required for webhook access'}), 401
+            return jsonify({'error': 'API key required for webhook access', 'error_key': 'api_key_required_webhook'}), 401
         
         data = request.get_json()
         text = data.get('text')
@@ -997,7 +1232,7 @@ def webhook_analyze():
         post_id = data.get('post_id')
         
         if not text:
-            return jsonify({'error': 'text required'}), 400
+            return jsonify({'error': 'text required', 'error_key': 'text_required'}), 400
         
         # Analyze
         result = detector.analyze(text)
