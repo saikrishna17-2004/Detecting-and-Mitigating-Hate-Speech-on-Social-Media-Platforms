@@ -33,6 +33,14 @@ The app will run on http://localhost:3000
 
 Make sure the Flask backend is running on http://localhost:5000
 
+## Production Deployment
+
+Set this environment variable in your frontend hosting platform:
+
+`REACT_APP_API_BASE_URL=https://your-backend-service.onrender.com/api`
+
+If not set, production falls back to `/api` on the same origin.
+
 ## Project Structure
 
 ```

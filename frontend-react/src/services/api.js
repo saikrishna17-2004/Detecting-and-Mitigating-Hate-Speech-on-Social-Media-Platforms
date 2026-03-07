@@ -1,11 +1,12 @@
 import axios from 'axios';
 import { translateErrorKey, translateMessageKey } from '../i18n/translations';
 
-// Prefer env-configured base URL; default to direct backend URL in development
-// to avoid CRA proxy issues on some Windows localhost setups.
+// Prefer env-configured base URL.
+// Production fallback must not use localhost, otherwise deployed clients
+// (especially mobile) fail to reach the backend.
 const API_BASE_URL =
   process.env.REACT_APP_API_BASE_URL ||
-  (process.env.NODE_ENV === 'development' ? 'http://127.0.0.1:5000/api' : 'http://localhost:5000/api');
+  (process.env.NODE_ENV === 'development' ? 'http://127.0.0.1:5000/api' : '/api');
 
 // API service layer
 const api = axios.create({
