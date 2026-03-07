@@ -17,5 +17,6 @@ deep-translator==1.11.4
 
 # Database + utils
 pymongo==4.6.0
+dnspython==2.6.1
 python-dotenv==1.0.0
 requests==2.31.0

@@ -32,9 +32,16 @@ def create_app():
     # Register blueprints
     app.register_blueprint(api_bp, url_prefix='/api')
     
-    # Initialize MongoDB (indexes, counters)
-    init_db()
-    print("Database initialized successfully!")
+    # Initialize MongoDB (indexes, counters). Keep API bootable even if DB is down.
+    db_ready = True
+    try:
+        init_db()
+        print("Database initialized successfully!")
+    except Exception as db_error:
+        db_ready = False
+        print(f"WARNING: Database initialization failed: {db_error}")
+
+    app.config['DB_READY'] = db_ready
     
     # Root endpoint
     @app.route('/')
@@ -56,7 +63,8 @@ def create_app():
         return jsonify({
             'status': 'healthy',
             'ready': True,
-            'server': 'app'
+            'server': 'app',
+            'database_ready': bool(app.config.get('DB_READY', False))
         })
     
     return app

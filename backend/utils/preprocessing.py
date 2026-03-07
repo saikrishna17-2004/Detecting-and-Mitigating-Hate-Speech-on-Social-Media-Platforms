@@ -5,13 +5,21 @@ from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
 from langdetect import detect, LangDetectException
 
-# Download required NLTK data
+def _safe_nltk_download(resource_name):
+    """Best-effort NLTK download that never raises on startup."""
+    try:
+        nltk.download(resource_name, quiet=True)
+    except Exception:
+        pass
+
+
+# Download required NLTK data (best effort only)
 try:
     nltk.data.find('corpora/stopwords')
 except LookupError:
-    nltk.download('stopwords')
-    nltk.download('wordnet')
-    nltk.download('punkt')
+    _safe_nltk_download('stopwords')
+    _safe_nltk_download('wordnet')
+    _safe_nltk_download('punkt')
 
 class TextPreprocessor:
     """Text preprocessing utilities for hate speech detection"""
@@ -20,9 +28,13 @@ class TextPreprocessor:
         self.lemmatizer = WordNetLemmatizer()
         try:
             self.stop_words = set(stopwords.words('english'))
-        except:
-            nltk.download('stopwords')
-            self.stop_words = set(stopwords.words('english'))
+        except Exception:
+            _safe_nltk_download('stopwords')
+            try:
+                self.stop_words = set(stopwords.words('english'))
+            except Exception:
+                # Keep service running even if NLTK assets are unavailable.
+                self.stop_words = set()
     
     def clean_text(self, text):
         """Clean and normalize text"""
