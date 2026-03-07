@@ -25,7 +25,7 @@
       "value": "https://your-frontend-url.onrender.com"
     }
   },
-  "buildCommand": "pip install -r requirements.txt",
-  "startCommand": "gunicorn -w 4 -b 0.0.0.0:$PORT run_backend:app",
+  "buildCommand": "pip install -r requirements.render.txt",
+  "startCommand": "gunicorn --workers 1 --threads 8 --timeout 120 --bind 0.0.0.0:$PORT run_backend:app",
   "regions": ["us"]
 }

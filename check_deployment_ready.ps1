@@ -136,17 +136,17 @@ if ($allGood) {
 }
 Write-Host "========================================`n" -ForegroundColor Cyan
 
-# Display generated keys for production
-Write-Host "🔐 Production Environment Variables (save these):" -ForegroundColor Cyan
-Write-Host "Copy these to your Render dashboard:" -ForegroundColor Gray
+# Display safe env var template for production
+Write-Host "Production Environment Variables template:" -ForegroundColor Cyan
+Write-Host "Copy these keys to your Render dashboard and set secure values:" -ForegroundColor Gray
 Write-Host ""
-Write-Host "SECRET_KEY=ib90onHydhLh8cpoAUYLIyA0bAVQrKb7BVSYcRMISsg" -ForegroundColor Yellow
-Write-Host "JWT_SECRET_KEY=JJFEZ6Cvc1YhQ45nRsm2mMaqyPURX-sFrGMHfBohr9A" -ForegroundColor Yellow
-Write-Host 'DATABASE_URL=mongodb+srv://SAIKRISHNA:YadavNakkala@cluster0.osgwmcy.mongodb.net/hate_speech_db?retryWrites=true&w=majority' -ForegroundColor Yellow
+Write-Host "SECRET_KEY=<generate-random-secret>" -ForegroundColor Yellow
+Write-Host "JWT_SECRET_KEY=<generate-random-secret>" -ForegroundColor Yellow
+Write-Host "DATABASE_URL=<your-mongodb-atlas-connection-string>" -ForegroundColor Yellow
 Write-Host "FLASK_ENV=production" -ForegroundColor Yellow
 Write-Host "FRONTEND_URL=https://your-netlify-site.netlify.app" -ForegroundColor Yellow
 Write-Host ""
-Write-Host '(Update FRONTEND_URL after frontend deployment)' -ForegroundColor Gray
+Write-Host "(Update FRONTEND_URL after frontend deployment)" -ForegroundColor Gray
 Write-Host ""
 
 
