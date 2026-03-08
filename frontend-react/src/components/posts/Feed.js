@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Container, Box, CircularProgress, Typography } from '@mui/material';
-import { postAPI, userAPI } from '../../services/api';
+import { postAPI, userAPI, analysisAPI } from '../../services/api';
 import PostCard from './PostCard';
 import { translate } from '../../i18n/translations';
 
@@ -56,6 +56,24 @@ function Feed({ user, onModerationAlert, uiLanguage = 'english', onLanguageChang
 
   const handleComment = async (postId, commentText) => {
     try {
+      // Match post creation behavior: only high-confidence hate comments are blocked.
+      const analysisResponse = await analysisAPI.analyzeText(
+        commentText,
+        user?.id,
+        user?.username
+      );
+
+      if (analysisResponse?.data?.action_taken === 'block') {
+        onModerationAlert({
+          type: 'block',
+          message: analysisResponse.data.message,
+          messageKey: analysisResponse.data.message_key,
+          messageParams: analysisResponse.data.message_params,
+          category: analysisResponse.data.result?.category,
+        });
+        return;
+      }
+
       const response = await postAPI.addComment(postId, commentText, user?.id, user?.username);
 
       // Update post with new comment
