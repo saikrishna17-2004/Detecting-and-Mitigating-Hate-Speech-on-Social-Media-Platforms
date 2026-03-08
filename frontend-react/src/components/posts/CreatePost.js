@@ -60,20 +60,17 @@ function CreatePost({ user, onModerationAlert, uiLanguage = 'english', onLanguag
           user.username
         );
 
-        if (analysisResponse.data.result.is_hate_speech) {
+        // Strict policy: only high-confidence moderation blocks should stop posting.
+        if (analysisResponse.data.action_taken === 'block') {
           onModerationAlert({
-            type: analysisResponse.data.action_taken,
+            type: 'block',
             message: analysisResponse.data.message,
             messageKey: analysisResponse.data.message_key,
             messageParams: analysisResponse.data.message_params,
             category: analysisResponse.data.result.category,
           });
-
-          // If suspended, don't create post
-          if (analysisResponse.data.action_taken === 'suspended') {
-            setLoading(false);
-            return;
-          }
+          setLoading(false);
+          return;
         }
       }
 
@@ -92,6 +89,21 @@ function CreatePost({ user, onModerationAlert, uiLanguage = 'english', onLanguag
       });
 
       if (!createResult.ok) {
+        const blockedAnalysis = createResult.error?.response?.data?.analysis;
+        const blockedByModeration =
+          createResult.error?.response?.data?.error_key === 'post_blocked_high_confidence_hate_speech';
+
+        if (blockedByModeration && blockedAnalysis) {
+          onModerationAlert({
+            type: 'block',
+            message:
+              createResult.error?.response?.data?.error ||
+              translate(uiLanguage, 'hateSpeechDetected'),
+            messageKey: createResult.error?.response?.data?.error_key,
+            messageParams: {},
+            category: blockedAnalysis.category,
+          });
+        }
         return;
       }
 

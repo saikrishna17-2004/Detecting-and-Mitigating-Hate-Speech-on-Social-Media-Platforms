@@ -57,11 +57,6 @@ function Feed({ user, onModerationAlert, uiLanguage = 'english', onLanguageChang
   const handleComment = async (postId, commentText) => {
     try {
       const response = await postAPI.addComment(postId, commentText, user?.id, user?.username);
-      
-      // Check for hate speech detection
-      if (response.data.moderation_alert) {
-        onModerationAlert(response.data.moderation_alert);
-      }
 
       // Update post with new comment
       setPosts((prevPosts) => prevPosts.map((post) => {
@@ -73,6 +68,17 @@ function Feed({ user, onModerationAlert, uiLanguage = 'english', onLanguageChang
         return { ...post, comments: [...existingComments, response.data.comment] };
       }));
     } catch (err) {
+      const errorData = err?.response?.data || {};
+      if (errorData.error_key === 'comment_blocked_high_confidence_hate_speech') {
+        onModerationAlert({
+          type: 'block',
+          message: errorData.error,
+          messageKey: errorData.error_key,
+          messageParams: {},
+          category: errorData.analysis?.category,
+        });
+        return;
+      }
       console.error('Failed to add comment:', err);
     }
   };

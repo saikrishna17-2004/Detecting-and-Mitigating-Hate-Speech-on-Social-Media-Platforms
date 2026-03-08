@@ -948,7 +948,7 @@ def unlike_post(post_id):
 
 @api_bp.route('/posts/<int:post_id>/comments', methods=['POST'])
 def add_post_comment(post_id):
-    """Add a comment to a post"""
+    """Add a comment to a post with the same moderation policy as posts."""
     try:
         post = get_post_by_id(post_id)
         if not post:
@@ -969,21 +969,88 @@ def add_post_comment(post_id):
                 user_id = None
 
         comment_user = get_user_by_id(user_id) if user_id else None
+
+        # Block suspended users from creating comments as well.
+        if comment_user and comment_user.get('is_suspended'):
+            return jsonify({
+                'error': 'Your account is suspended',
+                'error_key': 'account_suspended'
+            }), 403
+
         if not username:
             username = (comment_user or {}).get('username') or 'user'
+
+        # Analyze comment text for hate speech.
+        analysis = detector.analyze(comment_text)
+
+        # Mirror post policy: only high-confidence hate speech is auto-blocked.
+        if analysis['is_hate_speech'] and analysis['confidence'] >= BLOCK_CONFIDENCE:
+            action_taken = 'warning'
+            updated_user = comment_user
+
+            if user_id and comment_user:
+                updated_user = increment_user_warning(user_id, 1)
+                should_suspend = updated_user.get('warning_count', 0) >= MAX_WARNINGS and not updated_user.get('is_suspended')
+                action_taken = 'suspension' if should_suspend else 'warning'
+
+                if should_suspend:
+                    updated_user = update_user(user_id, {
+                        'is_suspended': True,
+                        'suspended_at': datetime.utcnow()
+                    })
+
+                create_violation({
+                    'user_id': user_id,
+                    'content': comment_text,
+                    'category': analysis['category'],
+                    'confidence_score': analysis['confidence'],
+                    'language': analysis['language'],
+                    'action_taken': action_taken
+                })
+
+                # Keep notifications consistent with post moderation behavior.
+                if action_taken == 'suspension':
+                    email_service.send_suspension_email(
+                        user_email=updated_user.get('email'),
+                        username=updated_user.get('username'),
+                        violation_count=updated_user.get('warning_count', 0),
+                        final_violation_content=comment_text,
+                        category=analysis['category']
+                    )
+                else:
+                    email_service.send_warning_email(
+                        user_email=updated_user.get('email'),
+                        username=updated_user.get('username'),
+                        warning_count=updated_user.get('warning_count', 0),
+                        max_warnings=MAX_WARNINGS,
+                        violation_content=comment_text,
+                        category=analysis['category']
+                    )
+
+            return jsonify({
+                'success': False,
+                'error': 'Comment contains high-confidence hate speech and was blocked',
+                'error_key': 'comment_blocked_high_confidence_hate_speech',
+                'analysis': analysis,
+                'user_status': to_user_dict(updated_user) if updated_user else None
+            }), 400
 
         comment_doc = {
             'user_id': user_id,
             'username': username,
             'text': comment_text,
-            'created_at': datetime.utcnow().isoformat()
+            'created_at': datetime.utcnow().isoformat(),
+            'confidence_score': analysis['confidence'],
+            'is_hate_speech': False,
         }
 
         add_comment_to_post(post_id, comment_doc)
 
         return jsonify({
             'success': True,
-            'comment': comment_doc
+            'comment': comment_doc,
+            'analysis': analysis,
+            'user_status': to_user_dict(comment_user) if comment_user else None
         }), 201
     except Exception as e:
         return jsonify({'error': str(e)}), 500
