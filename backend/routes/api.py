@@ -983,8 +983,8 @@ def add_post_comment(post_id):
         # Analyze comment text for hate speech.
         analysis = detector.analyze(comment_text)
 
-        # Mirror post policy: only high-confidence hate speech is auto-blocked.
-        if analysis['is_hate_speech'] and analysis['confidence'] >= BLOCK_CONFIDENCE:
+        # Comments are stricter: block whenever hate speech is detected.
+        if analysis['is_hate_speech']:
             action_taken = 'warning'
             updated_user = comment_user
 
@@ -1029,8 +1029,8 @@ def add_post_comment(post_id):
 
             return jsonify({
                 'success': False,
-                'error': 'Comment contains high-confidence hate speech and was blocked',
-                'error_key': 'comment_blocked_high_confidence_hate_speech',
+                'error': 'Comment contains hate speech and was blocked',
+                'error_key': 'comment_blocked_hate_speech',
                 'analysis': analysis,
                 'user_status': to_user_dict(updated_user) if updated_user else None
             }), 400

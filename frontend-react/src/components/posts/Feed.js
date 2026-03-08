@@ -56,14 +56,14 @@ function Feed({ user, onModerationAlert, uiLanguage = 'english', onLanguageChang
 
   const handleComment = async (postId, commentText) => {
     try {
-      // Match post creation behavior: only high-confidence hate comments are blocked.
+      // For comments, block submission whenever hate speech is detected.
       const analysisResponse = await analysisAPI.analyzeText(
         commentText,
         user?.id,
         user?.username
       );
 
-      if (analysisResponse?.data?.action_taken === 'block') {
+      if (analysisResponse?.data?.result?.is_hate_speech) {
         onModerationAlert({
           type: 'block',
           message: analysisResponse.data.message,
@@ -87,7 +87,10 @@ function Feed({ user, onModerationAlert, uiLanguage = 'english', onLanguageChang
       }));
     } catch (err) {
       const errorData = err?.response?.data || {};
-      if (errorData.error_key === 'comment_blocked_high_confidence_hate_speech') {
+      if (
+        errorData.error_key === 'comment_blocked_high_confidence_hate_speech' ||
+        errorData.error_key === 'comment_blocked_hate_speech'
+      ) {
         onModerationAlert({
           type: 'block',
           message: errorData.error,
