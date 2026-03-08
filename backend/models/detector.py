@@ -105,6 +105,11 @@ class HateSpeechDetector:
             'chutiya', 'chutiye', 'chutiy', 'gandu', 'harami', 'randi',
             'lawde', 'laude', 'lund', 'maachud'
         }
+        # Explicit profanity terms that should be blocked at post creation time.
+        self.explicit_profanity_pattern = re.compile(
+            r'\b(?:fuck(?:ing|er|ers|ed|s)?|bitch(?:es|y|ing)?)\b',
+            re.IGNORECASE,
+        )
         self.language_lexicons = {}  # lang_code -> (keywords, phrases)
         self.translator = None
         self.translator_mode = None
@@ -134,9 +139,24 @@ class HateSpeechDetector:
         supported_lang_lexicons = ['hi', 'bn', 'ta', 'te', 'mr', 'gu', 'kn', 'ml', 'pa', 'ur']
 
         for lang_code in supported_lang_lexicons:
-            lexicon_path = f'data/hate_keywords_{lang_code}.txt'
-            if os.path.exists(lexicon_path):
-                keywords, phrases = self._load_lexicon_file(lexicon_path)
+            default_path = f'data/hate_keywords_{lang_code}.txt'
+            clean_path = f'data/hate_keywords_{lang_code}_clean.txt'
+
+            keywords = set()
+            phrases = set()
+
+            # Merge both files when available; clean list is preferred but not exclusive.
+            for lexicon_path in (clean_path, default_path):
+                if os.path.exists(lexicon_path):
+                    loaded_keywords, loaded_phrases = self._load_lexicon_file(lexicon_path)
+                    keywords.update(loaded_keywords)
+                    phrases.update(loaded_phrases)
+
+            # Filter very short/noisy fragments that hurt precision in Indic matching.
+            keywords = {term for term in keywords if len(term.strip()) >= 2}
+            phrases = {term for term in phrases if len(term.strip()) >= 4}
+
+            if keywords or phrases:
                 self.language_lexicons[lang_code] = (keywords, phrases)
 
     def _load_lexicon_file(self, path):
@@ -180,6 +200,28 @@ class HateSpeechDetector:
         normalized = re.sub(r'\s+', ' ', normalized).strip()
         return normalized
 
+    def _normalize_indic_text(self, text):
+        """Normalize Indic text by removing punctuation-like separators and extra spaces."""
+        if not text:
+            return ''
+
+        text = text.lower()
+        # Remove common invisible joiners/non-joiners that break exact matching.
+        text = re.sub(r'[\u200c\u200d\ufeff]', '', text)
+        text = re.sub(r'[\r\n\t]+', ' ', text)
+        text = re.sub(r'\s+', ' ', text).strip()
+        return text
+
+    def _contains_indic_keyword(self, text, keyword):
+        """Match Indic keyword as a standalone token with robust punctuation boundaries."""
+        if not text or not keyword:
+            return False
+
+        escaped = re.escape(keyword)
+        # Use non-word boundaries so punctuation/emojis don't prevent matching.
+        pattern = rf'(?<!\w){escaped}(?!\w)'
+        return re.search(pattern, text, flags=re.UNICODE) is not None
+
     def load_offensive_lexicon(self, path='data/hate_keywords.txt'):
         """Load offensive keywords/phrases from a text file.
 
@@ -219,6 +261,16 @@ class HateSpeechDetector:
             return 0.0
 
         text_lower = text.lower()
+        normalized_indic_text = self._normalize_indic_text(text)
+
+        # Language fallback for script-heavy Telugu/Tamil where langdetect may misclassify.
+        script_lang = self._detect_indic_script_language(text)
+        if (not language or language not in self.language_lexicons) and script_lang in self.language_lexicons:
+            language = script_lang
+
+        # Hard block for explicit profanity variants to avoid low-confidence pass-through.
+        if self.explicit_profanity_pattern.search(text_lower):
+            return 0.95
         
         # Check language-specific lexicon first (only severe terms, high confidence)
         if language and language in self.language_lexicons:
@@ -226,19 +278,12 @@ class HateSpeechDetector:
             
             # For Indic scripts, use whole-word substring matching
             if language in INDIAN_LANGUAGE_CODES:
-                if any(phrase in text_lower for phrase in lang_phrases):
+                if any(self._contains_indic_keyword(normalized_indic_text, phrase) for phrase in lang_phrases):
                     return 0.95  # Very high - only severe multi-word slurs
-                # Check if any keyword appears as a standalone word (space-bounded or start/end)
+
+                # Check if any keyword appears as a standalone word with Unicode-aware boundaries.
                 for keyword in lang_keywords:
-                    # Build boundary patterns for Indic scripts (space, punctuation, start/end)
-                    if (keyword in text_lower and 
-                        (text_lower.startswith(keyword) or 
-                         text_lower.endswith(keyword) or
-                         f' {keyword} ' in text_lower or
-                         f' {keyword},' in text_lower or
-                         f' {keyword}.' in text_lower or
-                         f',{keyword} ' in text_lower or
-                         f'.{keyword} ' in text_lower)):
+                    if self._contains_indic_keyword(normalized_indic_text, keyword):
                         return 0.92  # Very high - only severe single-word slurs
             else:
                 # For English/Latin scripts, use token-based matching
