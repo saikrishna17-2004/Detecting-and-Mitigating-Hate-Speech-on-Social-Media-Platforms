@@ -1,4 +1,5 @@
-"""
+REACT_APP_API_URL=https://your-backend.onrender.com
+# or your actual backend URL"""
 Production Backend Server using Waitress WSGI Server
 More stable than Flask development server
 """
