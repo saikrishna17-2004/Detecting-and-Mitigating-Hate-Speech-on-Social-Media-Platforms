@@ -15,6 +15,41 @@ function getPathParts(req) {
   return cleaned ? cleaned.split('/').filter(Boolean) : [];
 }
 
+const WARNING_LIMIT = 3;
+
+function applyModerationWarning(user, result) {
+  if (!user || !result?.is_hate_speech) {
+    return { suspendedNow: false };
+  }
+
+  user.warning_count = (user.warning_count || 0) + 1;
+  state.violations.push({
+    id: state.nextViolationId++,
+    user_id: user.id,
+    username: user.username,
+    action: result.action_taken === 'block' ? 'block' : 'warn',
+    category: result.category || 'general',
+    confidence: result.confidence || 0.7,
+    created_at: nowIso(),
+  });
+
+  const suspendedNow = !user.is_suspended && user.warning_count >= WARNING_LIMIT;
+  if (suspendedNow) {
+    user.is_suspended = true;
+    state.violations.push({
+      id: state.nextViolationId++,
+      user_id: user.id,
+      username: user.username,
+      action: 'suspend',
+      category: 'general',
+      confidence: 1,
+      created_at: nowIso(),
+    });
+  }
+
+  return { suspendedNow };
+}
+
 module.exports = function handler(req, res) {
   const method = req.method;
   const parts = getPathParts(req);
@@ -49,8 +84,44 @@ module.exports = function handler(req, res) {
   }
 
   if (parts[0] === 'analyze' && method === 'POST') {
-    const { text } = req.body || {};
+    const { text, user_id } = req.body || {};
     const result = classifyText(text);
+
+    const user = findUserById(user_id);
+    if (user && user.is_suspended) {
+      return send(res, 200, {
+        result: {
+          is_hate_speech: true,
+          confidence: 1,
+          category: 'general',
+        },
+        action_taken: 'block',
+        message: 'Account suspended after 3 warnings. Contact admin to reactivate.',
+        message_key: 'account_suspended_after_warnings',
+        message_params: { warning_limit: WARNING_LIMIT },
+        warning_count: user.warning_count || 0,
+        account_suspended: true,
+      });
+    }
+
+    const { suspendedNow } = applyModerationWarning(user, result);
+
+    if (suspendedNow) {
+      return send(res, 200, {
+        result: {
+          is_hate_speech: true,
+          confidence: 1,
+          category: result.category || 'general',
+        },
+        action_taken: 'block',
+        message: 'Account suspended after 3 warnings. Contact admin to reactivate.',
+        message_key: 'account_suspended_after_warnings',
+        message_params: { warning_limit: WARNING_LIMIT },
+        warning_count: user.warning_count || WARNING_LIMIT,
+        account_suspended: true,
+      });
+    }
+
     return send(res, 200, {
       result: {
         is_hate_speech: result.is_hate_speech,
@@ -61,6 +132,8 @@ module.exports = function handler(req, res) {
       message: result.message,
       message_key: result.message_key,
       message_params: result.message_params,
+      warning_count: user ? (user.warning_count || 0) : 0,
+      account_suspended: !!user?.is_suspended,
     });
   }
 
@@ -76,6 +149,12 @@ module.exports = function handler(req, res) {
     const { content, user_id, image_url } = req.body || {};
     const author = findUserById(user_id);
     if (!author) return send(res, 400, { error: 'Invalid user_id' });
+    if (author.is_suspended) {
+      return send(res, 403, {
+        error: 'Account suspended after 3 warnings. Contact admin to reactivate.',
+        error_key: 'account_suspended_after_warnings',
+      });
+    }
 
     const analysis = classifyText(content || '');
     if (analysis.action_taken === 'block') {
@@ -122,6 +201,12 @@ module.exports = function handler(req, res) {
       const userId = Number(req.body?.user_id);
       const user = findUserById(userId);
       if (!text || !user) return send(res, 400, { error: 'Invalid comment payload' });
+      if (user.is_suspended) {
+        return send(res, 403, {
+          error: 'Account suspended after 3 warnings. Contact admin to reactivate.',
+          error_key: 'account_suspended_after_warnings',
+        });
+      }
 
       const analysis = classifyText(text);
       if (analysis.action_taken === 'block') {
@@ -207,6 +292,19 @@ module.exports = function handler(req, res) {
         confidence: 0.75,
         created_at: nowIso(),
       });
+      if (user.warning_count >= WARNING_LIMIT && !user.is_suspended) {
+        user.is_suspended = true;
+        state.violations.push({
+          id: state.nextViolationId++,
+          user_id: user.id,
+          username: user.username,
+          action: 'suspend',
+          category: 'general',
+          confidence: 1,
+          created_at: nowIso(),
+        });
+        return send(res, 200, { message: 'User warned and auto-suspended at 3 warnings' });
+      }
       return send(res, 200, { message: 'User warned successfully' });
     }
 

@@ -60,10 +60,16 @@ function CreatePost({ user, onModerationAlert, uiLanguage = 'english', onLanguag
           user.username
         );
 
+        const accountSuspended =
+          analysisResponse.data?.account_suspended ||
+          analysisResponse.data?.message_key === 'account_suspended_after_warnings';
+
         // Enforce moderation for all detected harmful content so users get immediate feedback.
         if (analysisResponse.data?.result?.is_hate_speech) {
           onModerationAlert({
-            type: analysisResponse.data.action_taken === 'block' ? 'block' : 'warn',
+            type: accountSuspended
+              ? 'suspended'
+              : (analysisResponse.data.action_taken === 'block' ? 'block' : 'warn'),
             message: analysisResponse.data.message,
             messageKey: analysisResponse.data.message_key,
             messageParams: analysisResponse.data.message_params,

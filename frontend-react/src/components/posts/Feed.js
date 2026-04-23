@@ -64,8 +64,11 @@ function Feed({ user, onModerationAlert, uiLanguage = 'english', onLanguageChang
       );
 
       if (analysisResponse?.data?.result?.is_hate_speech) {
+        const accountSuspended =
+          analysisResponse.data?.account_suspended ||
+          analysisResponse.data?.message_key === 'account_suspended_after_warnings';
         onModerationAlert({
-          type: 'block',
+          type: accountSuspended ? 'suspended' : 'block',
           message: analysisResponse.data.message,
           messageKey: analysisResponse.data.message_key,
           messageParams: analysisResponse.data.message_params,
