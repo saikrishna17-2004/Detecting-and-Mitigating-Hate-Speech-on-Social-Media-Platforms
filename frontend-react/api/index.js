@@ -7,7 +7,7 @@ const {
   findUserByUsername,
   classifyText,
   toClientPost,
-} = require('../lib/store');
+} = require('./store');
 
 function getPathParts(req) {
   const raw = (req.url || '/').split('?')[0];
