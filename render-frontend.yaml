@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: hate-speech-pwa
+    runtime: node
+    runtimeVersion: 18
+    plan: free
+    region: us-east
+    buildCommand: cd frontend-react && npm install && npm run build
+    startCommand: npx serve -s frontend-react/build -l 3000
+    envVars:
+      - key: REACT_APP_API_URL
+        scope: build
+        value: https://hate-speech-api.onrender.com
