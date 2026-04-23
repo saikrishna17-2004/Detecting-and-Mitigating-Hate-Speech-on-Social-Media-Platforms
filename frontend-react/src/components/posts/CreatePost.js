@@ -60,10 +60,10 @@ function CreatePost({ user, onModerationAlert, uiLanguage = 'english', onLanguag
           user.username
         );
 
-        // Strict policy: only high-confidence moderation blocks should stop posting.
-        if (analysisResponse.data.action_taken === 'block') {
+        // Enforce moderation for all detected harmful content so users get immediate feedback.
+        if (analysisResponse.data?.result?.is_hate_speech) {
           onModerationAlert({
-            type: 'block',
+            type: analysisResponse.data.action_taken === 'block' ? 'block' : 'warn',
             message: analysisResponse.data.message,
             messageKey: analysisResponse.data.message_key,
             messageParams: analysisResponse.data.message_params,
