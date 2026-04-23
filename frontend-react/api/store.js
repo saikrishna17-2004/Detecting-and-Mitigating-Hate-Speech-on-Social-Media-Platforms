@@ -80,18 +80,59 @@ function findUserByUsername(username) {
 }
 
 function classifyText(text) {
-  const hay = String(text || '').toLowerCase();
-  const blockedWords = ['kill yourself', 'die', 'worthless', 'subhuman', 'hate you'];
-  const warnWords = ['idiot', 'stupid', 'trash'];
+  const hay = String(text || '').toLowerCase().trim();
+  const normalized = hay.replace(/[^a-z0-9\s]/g, ' ').replace(/\s+/g, ' ').trim();
 
-  const blocked = blockedWords.some((w) => hay.includes(w));
-  const warning = !blocked && warnWords.some((w) => hay.includes(w));
+  // High severity phrases generally mapped to direct threats / extreme abuse.
+  const blockedPatterns = [
+    /\bkill yourself\b/,
+    /\byou should die\b/,
+    /\bdeserve to die\b/,
+    /\bgo die\b/,
+    /\bhang yourself\b/,
+    /\bsubhuman\b/,
+  ];
 
-  if (blocked) {
+  // Slurs and targeted hate terms.
+  const slurPatterns = [
+    /\bnigger\b/,
+    /\bnigga\b/,
+    /\bfaggot\b/,
+    /\bdyke\b/,
+    /\bchink\b/,
+    /\bwetback\b/,
+    /\braghead\b/,
+    /\bcoon\b/,
+    /\btranny\b/,
+    /\bmuzzie\b/,
+  ];
+
+  // Lower severity abusive/profane language.
+  const abusivePatterns = [
+    /\bbitch\b/,
+    /\bhoes?\b/,
+    /\bpussy\b/,
+    /\bretard(ed)?\b/,
+    /\btrash\b/,
+    /\bidiot\b/,
+    /\bstupid\b/,
+    /\bscum\b/,
+  ];
+
+  const hasBlocked = blockedPatterns.some((p) => p.test(normalized));
+  const hasSlur = slurPatterns.some((p) => p.test(normalized));
+  const hasAbuse = abusivePatterns.some((p) => p.test(normalized));
+
+  let score = 0;
+  if (hasBlocked) score += 3;
+  if (hasSlur) score += 2;
+  if (hasAbuse) score += 1;
+
+  if (score >= 3) {
     return {
       is_hate_speech: true,
-      confidence: 0.93,
-      category: 'general',
+      confidence: Math.min(0.99, 0.55 + score * 0.1),
+      category: hasSlur ? 'hate' : 'general',
       action_taken: 'block',
       message: 'Post blocked due to high-confidence hate speech.',
       message_key: 'post_blocked_high_confidence_hate_speech',
@@ -99,11 +140,11 @@ function classifyText(text) {
     };
   }
 
-  if (warning) {
+  if (score > 0) {
     return {
       is_hate_speech: true,
-      confidence: 0.68,
-      category: 'general',
+      confidence: Math.min(0.89, 0.45 + score * 0.12),
+      category: hasSlur ? 'hate' : 'abusive',
       action_taken: 'warn',
       message: 'Potentially harmful language detected.',
       message_key: 'content_flagged_hate_speech',
